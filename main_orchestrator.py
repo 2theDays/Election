@@ -1,11 +1,7 @@
-"""
-2026 충북도지사 선거 전략 통합 지휘본부 (Strategy Command Center)
-전체 파이프라인을 실행하고 최종 전략 리포트를 생성합니다.
-"""
-
 import os
 import subprocess
 import json
+import time
 import pandas as pd
 from datetime import datetime
 from anthropic import Anthropic
@@ -14,98 +10,107 @@ class StrategyCommandCenter:
     def __init__(self):
         self.api_key = os.environ.get("ANTHROPIC_API_KEY")
         self.client = Anthropic(api_key=self.api_key) if self.api_key else None
-        self.r_path = r"C:\Program Files\R\R-4.5.2\bin\Rscript.exe" # 사용자 시스템 경로에 맞춤
+        self.r_path = r"C:\Program Files\R\R-4.5.2\bin\Rscript.exe"
+        self.repo_url = "https://github.com/2theDays/Election.git"
+        self.vercel_url = "https://election-umber.vercel.app/"
+        
+        # 단계별 예상 소요 시간 (초)
+        self.stages = [
+            {"id": "EVENT", "name": "가상 시나리오 에이전트 분석", "cmd": "py political_event_agent.py", "eta": 15},
+            {"id": "NETWORK", "name": "다층 네트워크 지표 산출", "cmd": f'"{self.r_path}" network_analysis_premium.R', "eta": 12},
+            {"id": "GIS", "name": "지역 지배력 및 공간 분석", "cmd": f'"{self.r_path}" regional_gis_analysis.R', "eta": 10},
+            {"id": "STRESS", "name": "리스크 스트레스 테스트", "cmd": f'"{self.r_path}" stress_test_engine.R', "eta": 8},
+            {"id": "SD", "name": "동태적 지지율 시뮬레이션", "cmd": f'"{self.r_path}" sd_model_deSolve.R', "eta": 5},
+            {"id": "AI", "name": "AI 수석 컨설턴트 전략 도출", "cmd": "INTERNAL_GEN_REPORT", "eta": 20},
+            {"id": "CLOUD", "name": "지휘소 클라우드 동기화 (Vercel)", "cmd": "GIT_SYNC", "eta": 15},
+        ]
 
-    def run_stage(self, name, command):
-        print(f"\n🚀 [{name}] 단계 실행 중...")
+    def print_header(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("="*60)
+        print("   [ 2026 충북도지사 선거 전략 통합 지휘본부 v2.1 ]")
+        print(f"   분석 일시: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print("="*60)
+
+    def run_cmd(self, cmd):
         try:
-            result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
-            print(f"✅ {name} 완료")
+            subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True)
             return True
-        except subprocess.CalledProcessError as e:
-            print(f"❌ {name} 실패: {e.stderr}")
+        except Exception:
             return False
 
+    def git_sync(self):
+        """데이터를 GitHub에 업로드하여 Vercel 자동 배포 트리거"""
+        commit_msg = f"Update_Daily_Briefing_{datetime.now().strftime('%m%d_%H%M')}"
+        commands = [
+            "git add .",
+            f'git commit -m "{commit_msg}"',
+            "git push origin main"
+        ]
+        for cmd in commands:
+            if not self.run_cmd(cmd):
+                return False
+        return True
+
     def generate_strategic_report(self):
-        """모든 분석 데이터를 통합하여 Claude가 전략 제안 생성"""
-        print("\n🧠 인공지능 전략 도출 중...")
+        """AI 전략 리포트 생성 로직"""
+        if not self.client:
+            return "⚠️ API 키가 누락되어 전략 리포트가 생성되지 않았습니다."
         
         try:
-            # 1. 데이터 로드
-            network_scores = pd.read_csv("centrality_scores_multilayer.csv").to_string()
-            regional_data = pd.read_csv("regional_dominance_data.csv").to_string()
-            stress_test = pd.read_csv("stress_test_summary.csv").to_string()
+            # 주요 분석 파일 로드
+            network = pd.read_csv("centrality_scores_multilayer.csv").to_string()
+            stress = pd.read_csv("stress_test_summary.csv").to_string()
             
-            # 가상 이벤트 결과가 있다면 로드
-            event_impact = ""
-            if os.path.exists("event_impact_result.json"):
-                with open("event_impact_result.json", "r", encoding="utf-8") as f:
-                    event_impact = json.dumps(json.load(f), ensure_ascii=False, indent=2)
-
-            prompt = f"""
-당신은 '2026 충북도지사 선거 전략 지휘소'의 수석 컨설턴트입니다. 
-다음은 실시간 수집된 데이터 분석 결과 및 리스크 테스트 보고서입니다. 
-이를 바탕으로 승리를 위한 **초정밀 전략 리포트**를 작성하세요.
-
-**[데이터 요약]**
-1. 다층 네트워크 영향력:
-{network_scores}
-
-2. 지역별 지배력 현황:
-{regional_data}
-
-3. 스트레스 테스트 결과 (취약점 분석):
-{stress_test}
-
-4. 최근 발생한 핵심 이벤트 및 파급력:
-{event_impact}
-
-**[리포트 포함 사항]**
-1. **현 판세 정밀 진단**: 누가 현재 실질적 주도권을 쥐고 있는가?
-2. **후보별 리스크 관리**: 특정 자산(인맥/공당/여론) 상실 시 누가 가장 치명적인가?
-3. **타겟 지역 전략**: 승부처(청주 등)를 장악하기 위한 구체적 행동 지침
-4. **회복 탄력성 강화 전략**: 리스크 발생 시 타격을 최소화하기 위한 조직/프레임 구축법
-5. **가상 시나리오 분석**: 현재의 가상 이벤트가 장기적으로 누구에게 유리한가?
-
-**주의**: 반드시 실행 가능한 구체적인 수치와 지명을 언급하며 작성하세요.
-"""
-            if not self.client:
-                return "⚠️ API 키가 없어 리포트를 생성할 수 없습니다."
-
+            prompt = f"당신은 선거 전략 수석 컨설턴트입니다. 다음 데이터를 바탕으로 승리 전략을 요약하세요.\n\n[네트워크]\n{network}\n\n[리스크]\n{stress}"
+            
             message = self.client.messages.create(
                 model="claude-3-5-sonnet-20241022",
-                max_tokens=4000,
+                max_tokens=2000,
                 messages=[{"role": "user", "content": prompt}]
             )
-            
             return message.content[0].text
         except Exception as e:
-            return f"❌ 리포트 생성 오류: {e}"
+            return f"오류: {e}"
 
-    def execute_full_pipeline(self):
-        print(f"📅 분석 일시: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        
-        # 1. 데이터 요약
-        self.run_stage("가상 이벤트 분석", "py political_event_agent.py")
-        
-        # 2. R 분석 엔진 실행
-        self.run_stage("다층 네트워크 분석", f'"{self.r_path}" network_analysis_premium.R')
-        self.run_stage("지역 GIS 분석", f'"{self.r_path}" regional_gis_analysis.R')
-        self.run_stage("리스크 스트레스 테스트", f'"{self.r_path}" stress_test_engine.R')
-        self.run_stage("SD 지지율 시뮬레이션", f'"{self.r_path}" sd_model_deSolve.R')
-        
-        # 3. 최종 전략 도출
-        report = self.generate_strategic_report()
-        
-        report_file = f"Strategy_Report_{datetime.now().strftime('%Y%m%d_%H%M')}.md"
-        with open(report_file, "w", encoding="utf-8") as f:
-            f.write(f"# 2026 충북도지사 선거 실시간 전략 리포트\n\n")
-            f.write(f"**생성일시**: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n")
-            f.write("---\n\n")
-            f.write(report)
+    def execute(self):
+        self.print_header()
+        total_steps = len(self.stages)
+        start_time = time.time()
+
+        for i, stage in enumerate(self.stages):
+            progress = (i / total_steps) * 100
+            remaining_eta = sum(s['eta'] for s in self.stages[i:])
             
-        print(f"\n🎯 전략 리포트가 생성되었습니다: {report_file}")
+            print(f"\n[{i+1}/{total_steps}] {stage['name']}...")
+            print(f"   └─ 예상 남은 시간: 약 {remaining_eta}초 (전체 진척도: {progress:.1f}%)")
+            
+            s_time = time.time()
+            success = False
+            
+            if stage['cmd'] == "INTERNAL_GEN_REPORT":
+                report = self.generate_strategic_report()
+                with open(f"Report_latest.md", "w", encoding="utf-8") as f:
+                    f.write(report)
+                success = True
+            elif stage['cmd'] == "GIT_SYNC":
+                success = self.git_sync()
+            else:
+                success = self.run_cmd(stage['cmd'])
+            
+            if success:
+                elapsed = time.time() - s_time
+                print(f"   ✅ 완료 ({elapsed:.1f}초)")
+            else:
+                print(f"   ❌ 단계 오류 발생 (건너뜀)")
+
+        total_elapsed = time.time() - start_time
+        print("\n" + "="*60)
+        print("   🏁 모든 분석 및 클라우드 배포가 완료되었습니다!")
+        print(f"   총 소요 시간: {total_elapsed/60:.1f}분")
+        print(f"   대시보드: {self.vercel_url}")
+        print("="*60)
 
 if __name__ == "__main__":
     commander = StrategyCommandCenter()
-    commander.execute_full_pipeline()
+    commander.execute()
