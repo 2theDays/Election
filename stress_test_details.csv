@@ -1,0 +1,22 @@
+"candidate","scenario","description","risk_index","resilience"
+"신용한","Official_Collapse","공당 지지 철회 및 정치적 권위 붕괴",90,10
+"신용한","Private_Isolation","핵심 인맥(학연/지연) 배신 및 조직력 상실",0,100
+"신용한","Sentiment_Backlash","여론의 극심한 악화 (Echo Chamber 역풍)",187.88,-87.88
+"노영민","Official_Collapse","공당 지지 철회 및 정치적 권위 붕괴",63.98,36.02
+"노영민","Private_Isolation","핵심 인맥(학연/지연) 배신 및 조직력 상실",28.91,71.09
+"노영민","Sentiment_Backlash","여론의 극심한 악화 (Echo Chamber 역풍)",126.48,-26.48
+"송기섭","Official_Collapse","공당 지지 철회 및 정치적 권위 붕괴",6.92,93.08
+"송기섭","Private_Isolation","핵심 인맥(학연/지연) 배신 및 조직력 상실",92.31,7.69
+"송기섭","Sentiment_Backlash","여론의 극심한 악화 (Echo Chamber 역풍)",161.54,-61.54
+"한범덕","Official_Collapse","공당 지지 철회 및 정치적 권위 붕괴",42.86,57.14
+"한범덕","Private_Isolation","핵심 인맥(학연/지연) 배신 및 조직력 상실",0,100
+"한범덕","Sentiment_Backlash","여론의 극심한 악화 (Echo Chamber 역풍)",1000,-900
+"윤희근","Official_Collapse","공당 지지 철회 및 정치적 권위 붕괴",90,10
+"윤희근","Private_Isolation","핵심 인맥(학연/지연) 배신 및 조직력 상실",0,100
+"윤희근","Sentiment_Backlash","여론의 극심한 악화 (Echo Chamber 역풍)",249.07,-149.07
+"이종배","Official_Collapse","공당 지지 철회 및 정치적 권위 붕괴",52.33,47.67
+"이종배","Private_Isolation","핵심 인맥(학연/지연) 배신 및 조직력 상실",41.86,58.14
+"이종배","Sentiment_Backlash","여론의 극심한 악화 (Echo Chamber 역풍)",183.14,-83.14
+"임호선","Official_Collapse","공당 지지 철회 및 정치적 권위 붕괴",45.09,54.91
+"임호선","Private_Isolation","핵심 인맥(학연/지연) 배신 및 조직력 상실",49.9,50.1
+"임호선","Sentiment_Backlash","여론의 극심한 악화 (Echo Chamber 역풍)",130.98,-30.98
