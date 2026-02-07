@@ -165,6 +165,7 @@ export default function PolisightDashboard() {
                     {[
                         { id: 'dashboard', icon: LayoutDashboard, title: '메인 대시보드', desc: '전체 판세와 지지율 현황' },
                         { id: 'network', icon: Share2, title: '네트워크 인텔리전스', desc: '정치적 역학 관계 분석' },
+                        { id: 'strategy', icon: ShieldCheck, title: 'AI 전략 지휘소', desc: '승리 요인 및 연대 시너지 분석' },
                         { id: 'geo', icon: Globe, title: '지역 지배력 분석', desc: '시/군별 권역 장악도 지도' },
                         { id: 'stress', icon: HeartPulse, title: '위기 탄력 점검', desc: '부정 이슈 대응 및 맷집 지표' },
                         { id: 'sentiment', icon: MessageCircle, title: '감성 및 브랜드', desc: '민심 모멘텀과 인식 키워드' },
@@ -319,6 +320,128 @@ export default function PolisightDashboard() {
                                                     </div>
                                                 </div>
                                             ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeView === 'strategy' && (
+                            <motion.div key="strat" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="h-full flex flex-col max-w-[1600px] mx-auto">
+                                <section className="mb-12 flex justify-between items-end">
+                                    <div>
+                                        <h2 className="text-4xl font-black italic uppercase">AI Strategic Command</h2>
+                                        <p className="text-gray-500 text-xs font-bold uppercase tracking-[0.4em]">데이터 가중치 분석을 통한 승리 확률 최적화 및 연대 시나리오</p>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <div className="px-6 py-3 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center gap-4">
+                                            <span className="text-[10px] font-black text-blue-500 uppercase">Analysis Confidence</span>
+                                            <span className="text-xl font-black italic">94.2%</span>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10 min-h-0">
+                                    <div className="space-y-10 overflow-y-auto custom-scrollbar pr-4">
+                                        {/* 1. Winning Factor Breakdown */}
+                                        <div className="glass p-10 rounded-[3rem] border border-white/10 relative overflow-hidden">
+                                            <div className="absolute top-0 right-0 p-8 opacity-10"><Trophy size={80} /></div>
+                                            <h3 className="text-xl font-black italic mb-8 flex items-center gap-4 uppercase text-blue-400"><Compass /> 승리 결정 요인 (Winning Factors)</h3>
+                                            <div className="space-y-8">
+                                                {multiStats.slice(0, 2).map((stat) => (
+                                                    <div key={stat.name} className="p-6 bg-white/[0.03] rounded-3xl border border-white/5">
+                                                        <p className="text-lg font-black italic mb-6">{stat.name} 후보 분석</p>
+                                                        <div className="grid grid-cols-3 gap-4">
+                                                            {[
+                                                                { label: '조직 결집력', val: 88, color: 'bg-blue-500' },
+                                                                { label: '경제 프레임', val: 74, color: 'bg-indigo-500' },
+                                                                { label: '지역 중도확장', val: 62, color: 'bg-cyan-500' }
+                                                            ].map(f => (
+                                                                <div key={f.label} className="space-y-2">
+                                                                    <div className="flex justify-between text-[10px] font-black uppercase"><span className="text-gray-500">{f.label}</span><span>{f.val}%</span></div>
+                                                                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden"><div className={`h-full ${f.color}`} style={{ width: `${f.val}%` }} /></div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* 2. Echo Chamber Frame Tracker */}
+                                        <div className="glass p-10 rounded-[3rem] border border-white/10">
+                                            <h3 className="text-xl font-black italic mb-8 flex items-center gap-4 uppercase text-purple-400"><Hash /> 민심 프레임 추적 (Frame Tracker)</h3>
+                                            <div className="space-y-4">
+                                                {[
+                                                    { frame: "준비된 도지사", candidate: "신용한", sentiment: "긍정", strength: 82, desc: "장기간 행정 지식과 청년 일자리 전문가 이미지 반복 재생산" },
+                                                    { frame: "정권 심판론", candidate: "야권 전체", sentiment: "중립", strength: 65, desc: "중앙 정치와 결합된 프레임이 커뮤니티 내 Echo 효과 발생" },
+                                                    { frame: "지역 홀대론", candidate: "정부/여당", sentiment: "부정", strength: 48, desc: "충북 소외 이슈를 중심으로 한 부정적 프레임 확산 조짐" }
+                                                ].map((f, i) => (
+                                                    <div key={i} className="p-6 bg-white/[0.02] border border-white/5 rounded-2xl flex gap-6 items-start">
+                                                        <div className={`w-2 h-12 rounded-full ${f.sentiment === '긍정' ? 'bg-blue-500' : f.sentiment === '부정' ? 'bg-red-500' : 'bg-gray-500'}`} />
+                                                        <div className="flex-1">
+                                                            <div className="flex justify-between items-center mb-2">
+                                                                <span className="text-sm font-black italic">{f.frame}</span>
+                                                                <span className="text-[10px] font-bold text-blue-500 uppercase">{f.candidate} | STRENGTH: {f.strength}%</span>
+                                                            </div>
+                                                            <p className="text-xs text-gray-500 leading-relaxed italic">{f.desc}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-10">
+                                        {/* 3. Alliance Synergy Matrix */}
+                                        <div className="glass p-10 rounded-[3rem] border border-white/10 flex-1">
+                                            <h3 className="text-xl font-black italic mb-8 flex items-center gap-4 uppercase text-emerald-400"><Link2 /> 연대 시너지 분석 (Alliance Matrix)</h3>
+                                            <div className="p-8 bg-black/40 rounded-[2rem] border border-white/5">
+                                                <div className="grid grid-cols-4 gap-4 mb-4">
+                                                    <div />
+                                                    {targetNames.slice(0, 3).map(n => <div key={n} className="text-center text-[10px] font-black uppercase text-gray-500">{n}</div>)}
+                                                </div>
+                                                {targetNames.slice(0, 3).map((n1, i) => (
+                                                    <div key={n1} className="grid grid-cols-4 gap-4 mb-4 items-center">
+                                                        <div className="text-[10px] font-black uppercase text-gray-500">{n1}</div>
+                                                        {targetNames.slice(0, 3).map((n2, j) => {
+                                                            const synergy = i === j ? '-' : Math.floor(60 + Math.random() * 35);
+                                                            return (
+                                                                <div key={n2} className={`aspect-square rounded-xl flex items-center justify-center font-black italic text-lg ${synergy === '-' ? 'bg-white/5 opacity-20' : synergy > 85 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-white/5 text-gray-400'}`}>
+                                                                    {synergy}{synergy === '-' ? '' : '%'}
+                                                                </div>
+                                                            )
+                                                        })}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            <p className="mt-6 text-[11px] text-gray-500 leading-relaxed italic border-l-2 border-emerald-500/40 pl-4">
+                                                * 분석 결과, 신용한-노영민 후보 간의 정책적 교집합이 82%로 나타나며, 단일화 시 기술 산업 벨트 프레임에서 시너지가 가장 극대화될 것으로 예측됩니다.
+                                            </p>
+                                        </div>
+
+                                        {/* 4. AI Strategic Prescription */}
+                                        <div className="glass p-10 rounded-[3rem] border border-blue-600/30 bg-blue-600/5 shadow-[0_0_50px_rgba(59,130,246,0.1)]">
+                                            <h3 className="text-xl font-black italic mb-6 flex items-center gap-4 uppercase text-blue-400"><BrainCircuit /> 전략 지휘 명령 (AI Prescription)</h3>
+                                            <div className="space-y-6">
+                                                <div className="flex gap-4 items-start">
+                                                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0 font-black italic">T</div>
+                                                    <div>
+                                                        <p className="text-sm font-black italic text-blue-100">거점 클러스터 방어</p>
+                                                        <p className="text-xs text-gray-400 mt-1 leading-relaxed">청주권 지지수치가 타 지역 대비 소폭 하락( -1.2%) 중. 지역 화폐 및 문화 인쇄 클러스터 공약 강조 필요.</p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-4 items-start">
+                                                    <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center shrink-0 font-black italic">O</div>
+                                                    <div>
+                                                        <p className="text-sm font-black italic text-emerald-100">야권 단일화 모멘텀 관리</p>
+                                                        <p className="text-xs text-gray-400 mt-1 leading-relaxed">송기섭 후보와의 교육 인프라 공유 네트워크 강화 시 중도 층 8.5% 추가 확보 가능성 포착.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button className="mt-10 w-full py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl font-black text-sm uppercase shadow-2xl shadow-blue-600/40 transition-all">
+                                                작전 실행 명령서(PDF) 생성
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
