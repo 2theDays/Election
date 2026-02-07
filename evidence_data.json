@@ -412,5 +412,751 @@
             "date": "2026-01-15",
             "keyword": "이종배"
         }
+    ],
+    "regional": [
+        {
+            "region": "청주",
+            "candidate": "신용한",
+            "x": "2",
+            "y": "4",
+            "base_score": "5",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "5.26612803721661"
+        },
+        {
+            "region": "충주",
+            "candidate": "신용한",
+            "x": "4",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "제천",
+            "candidate": "신용한",
+            "x": "6",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "단양",
+            "candidate": "신용한",
+            "x": "7",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "음성",
+            "candidate": "신용한",
+            "x": "3",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "진천",
+            "candidate": "신용한",
+            "x": "2",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "괴산",
+            "candidate": "신용한",
+            "x": "4",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "증평",
+            "candidate": "신용한",
+            "x": "3",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "보은",
+            "candidate": "신용한",
+            "x": "4",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "옥천",
+            "candidate": "신용한",
+            "x": "3",
+            "y": "3",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "영동",
+            "candidate": "신용한",
+            "x": "3",
+            "y": "2",
+            "base_score": "0",
+            "Total_Influence": "0.0532256074433228",
+            "final_score": "0"
+        },
+        {
+            "region": "청주",
+            "candidate": "노영민",
+            "x": "2",
+            "y": "4",
+            "base_score": "5",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "5.39532964396532"
+        },
+        {
+            "region": "충주",
+            "candidate": "노영민",
+            "x": "4",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "제천",
+            "candidate": "노영민",
+            "x": "6",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "단양",
+            "candidate": "노영민",
+            "x": "7",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "음성",
+            "candidate": "노영민",
+            "x": "3",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "진천",
+            "candidate": "노영민",
+            "x": "2",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "괴산",
+            "candidate": "노영민",
+            "x": "4",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "증평",
+            "candidate": "노영민",
+            "x": "3",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "보은",
+            "candidate": "노영민",
+            "x": "4",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "옥천",
+            "candidate": "노영민",
+            "x": "3",
+            "y": "3",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "영동",
+            "candidate": "노영민",
+            "x": "3",
+            "y": "2",
+            "base_score": "0",
+            "Total_Influence": "0.0790659287930648",
+            "final_score": "0"
+        },
+        {
+            "region": "청주",
+            "candidate": "송기섭",
+            "x": "2",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "충주",
+            "candidate": "송기섭",
+            "x": "4",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "제천",
+            "candidate": "송기섭",
+            "x": "6",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "단양",
+            "candidate": "송기섭",
+            "x": "7",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "음성",
+            "candidate": "송기섭",
+            "x": "3",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "진천",
+            "candidate": "송기섭",
+            "x": "2",
+            "y": "5",
+            "base_score": "8",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "8.4952380952381"
+        },
+        {
+            "region": "괴산",
+            "candidate": "송기섭",
+            "x": "4",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "증평",
+            "candidate": "송기섭",
+            "x": "3",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "보은",
+            "candidate": "송기섭",
+            "x": "4",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "옥천",
+            "candidate": "송기섭",
+            "x": "3",
+            "y": "3",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "영동",
+            "candidate": "송기섭",
+            "x": "3",
+            "y": "2",
+            "base_score": "0",
+            "Total_Influence": "0.0619047619047619",
+            "final_score": "0"
+        },
+        {
+            "region": "청주",
+            "candidate": "한범덕",
+            "x": "2",
+            "y": "4",
+            "base_score": "8",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "8.03809523809524"
+        },
+        {
+            "region": "충주",
+            "candidate": "한범덕",
+            "x": "4",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "제천",
+            "candidate": "한범덕",
+            "x": "6",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "단양",
+            "candidate": "한범덕",
+            "x": "7",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "음성",
+            "candidate": "한범덕",
+            "x": "3",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "진천",
+            "candidate": "한범덕",
+            "x": "2",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "괴산",
+            "candidate": "한범덕",
+            "x": "4",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "증평",
+            "candidate": "한범덕",
+            "x": "3",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "보은",
+            "candidate": "한범덕",
+            "x": "4",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "옥천",
+            "candidate": "한범덕",
+            "x": "3",
+            "y": "3",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "영동",
+            "candidate": "한범덕",
+            "x": "3",
+            "y": "2",
+            "base_score": "0",
+            "Total_Influence": "0.00476190476190476",
+            "final_score": "0"
+        },
+        {
+            "region": "청주",
+            "candidate": "윤희근",
+            "x": "2",
+            "y": "4",
+            "base_score": "5",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "5.20074873853833"
+        },
+        {
+            "region": "충주",
+            "candidate": "윤희근",
+            "x": "4",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "제천",
+            "candidate": "윤희근",
+            "x": "6",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "단양",
+            "candidate": "윤희근",
+            "x": "7",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "음성",
+            "candidate": "윤희근",
+            "x": "3",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "진천",
+            "candidate": "윤희근",
+            "x": "2",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "괴산",
+            "candidate": "윤희근",
+            "x": "4",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "증평",
+            "candidate": "윤희근",
+            "x": "3",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "보은",
+            "candidate": "윤희근",
+            "x": "4",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "옥천",
+            "candidate": "윤희근",
+            "x": "3",
+            "y": "3",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "영동",
+            "candidate": "윤희근",
+            "x": "3",
+            "y": "2",
+            "base_score": "0",
+            "Total_Influence": "0.0401497477076664",
+            "final_score": "0"
+        },
+        {
+            "region": "청주",
+            "candidate": "이종배",
+            "x": "2",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "충주",
+            "candidate": "이종배",
+            "x": "4",
+            "y": "6",
+            "base_score": "8",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "8.4368253968254"
+        },
+        {
+            "region": "제천",
+            "candidate": "이종배",
+            "x": "6",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "단양",
+            "candidate": "이종배",
+            "x": "7",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "음성",
+            "candidate": "이종배",
+            "x": "3",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "진천",
+            "candidate": "이종배",
+            "x": "2",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "괴산",
+            "candidate": "이종배",
+            "x": "4",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "증평",
+            "candidate": "이종배",
+            "x": "3",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "보은",
+            "candidate": "이종배",
+            "x": "4",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "옥천",
+            "candidate": "이종배",
+            "x": "3",
+            "y": "3",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "영동",
+            "candidate": "이종배",
+            "x": "3",
+            "y": "2",
+            "base_score": "0",
+            "Total_Influence": "0.0546031746031746",
+            "final_score": "0"
+        },
+        {
+            "region": "청주",
+            "candidate": "임호선",
+            "x": "2",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "0"
+        },
+        {
+            "region": "충주",
+            "candidate": "임호선",
+            "x": "4",
+            "y": "6",
+            "base_score": "0",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "0"
+        },
+        {
+            "region": "제천",
+            "candidate": "임호선",
+            "x": "6",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "0"
+        },
+        {
+            "region": "단양",
+            "candidate": "임호선",
+            "x": "7",
+            "y": "7",
+            "base_score": "0",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "0"
+        },
+        {
+            "region": "음성",
+            "candidate": "임호선",
+            "x": "3",
+            "y": "6",
+            "base_score": "3",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "3.22904707648346"
+        },
+        {
+            "region": "진천",
+            "candidate": "임호선",
+            "x": "2",
+            "y": "5",
+            "base_score": "8",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "8.6107922039559"
+        },
+        {
+            "region": "괴산",
+            "candidate": "임호선",
+            "x": "4",
+            "y": "5",
+            "base_score": "0",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "0"
+        },
+        {
+            "region": "증평",
+            "candidate": "임호선",
+            "x": "3",
+            "y": "5",
+            "base_score": "3",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "3.22904707648346"
+        },
+        {
+            "region": "보은",
+            "candidate": "임호선",
+            "x": "4",
+            "y": "4",
+            "base_score": "0",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "0"
+        },
+        {
+            "region": "옥천",
+            "candidate": "임호선",
+            "x": "3",
+            "y": "3",
+            "base_score": "0",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "0"
+        },
+        {
+            "region": "영동",
+            "candidate": "임호선",
+            "x": "3",
+            "y": "2",
+            "base_score": "0",
+            "Total_Influence": "0.076349025494487",
+            "final_score": "0"
+        }
+    ],
+    "stress": [
+        {
+            "candidate": "한범덕",
+            "Avg_Risk": "347.62",
+            "Max_Vulnerability": "1000",
+            "Crit_Scenario": "Sentiment_Backlash",
+            "Resilience_Score": "-247.62"
+        },
+        {
+            "candidate": "윤희근",
+            "Avg_Risk": "113.023333333333",
+            "Max_Vulnerability": "249.07",
+            "Crit_Scenario": "Sentiment_Backlash",
+            "Resilience_Score": "-13.0233333333333"
+        },
+        {
+            "candidate": "신용한",
+            "Avg_Risk": "92.6266666666667",
+            "Max_Vulnerability": "187.88",
+            "Crit_Scenario": "Sentiment_Backlash",
+            "Resilience_Score": "7.37333333333333"
+        },
+        {
+            "candidate": "이종배",
+            "Avg_Risk": "92.4433333333333",
+            "Max_Vulnerability": "183.14",
+            "Crit_Scenario": "Sentiment_Backlash",
+            "Resilience_Score": "7.55666666666667"
+        },
+        {
+            "candidate": "송기섭",
+            "Avg_Risk": "86.9233333333333",
+            "Max_Vulnerability": "161.54",
+            "Crit_Scenario": "Sentiment_Backlash",
+            "Resilience_Score": "13.0766666666667"
+        },
+        {
+            "candidate": "임호선",
+            "Avg_Risk": "75.3233333333333",
+            "Max_Vulnerability": "130.98",
+            "Crit_Scenario": "Sentiment_Backlash",
+            "Resilience_Score": "24.6766666666667"
+        },
+        {
+            "candidate": "노영민",
+            "Avg_Risk": "73.1233333333333",
+            "Max_Vulnerability": "126.48",
+            "Crit_Scenario": "Sentiment_Backlash",
+            "Resilience_Score": "26.8766666666667"
+        }
     ]
 }

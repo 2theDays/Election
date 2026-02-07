@@ -3,12 +3,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
     XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
-    AreaChart, Area, BarChart, Bar, Cell, PieChart, Pie
+    AreaChart, Area, BarChart, Bar, Cell, PieChart, Pie, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
 import {
     Users, Map, ShieldAlert, Zap, TrendingUp, Search,
     ChevronRight, Activity, Bell, Cpu, BookOpen, LayoutDashboard, User, Globe, FileText, X, PieChart as PieIcon, BarChart3, Info,
-    Share2, Layers, Compass, BrainCircuit, Newspaper, Link2, ExternalLink, HelpCircle, CheckCircle2, AlertTriangle, FileSearch, LineChart
+    Share2, Layers, Compass, BrainCircuit, Newspaper, Link2, ExternalLink, HelpCircle, CheckCircle2, AlertTriangle, FileSearch, LineChart,
+    ShieldCheck, BarChartHorizontal, HeartPulse, MessageCircle, Hash
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -19,9 +20,9 @@ import evidenceData from '../../evidence_data.json';
 const getCandidateStats = (name: string) => {
     const found = candidatesData.candidates.find(c => c.name === name);
     const scores: any = (evidenceData.centrality as any[]).find((s: any) => s.후보자 === name);
+    const stress: any = (evidenceData.stress as any[] || []).find((s: any) => s.candidate === name);
 
     // 근거 기반의 가공 수치 (승리 확률)
-    // 로직: 지지율(70%) + 네트워크 중심성(20%) + 리스크 보정(10%)
     const support = found ? found.poll_support : 5;
     const centrality = scores ? parseFloat(scores.페이지랭크) * 10 : 0.5;
     const baseWinProb = (support * 1.5) + (centrality * 20);
@@ -32,7 +33,8 @@ const getCandidateStats = (name: string) => {
             party: found.party,
             support: found.poll_support,
             influence: scores ? parseFloat(scores.종합점수) * 100 : 0.5 + (found.poll_support / 20),
-            risk: Math.floor(Math.random() * 20 + 10),
+            risk: stress ? parseFloat(stress.Avg_Risk) : Math.floor(Math.random() * 20 + 10),
+            resilience: stress ? parseFloat(stress.Resilience_Score) : 50,
             winProb: winProb,
             scores: scores,
             rationale_poll: `최근 3개 여론조사 평균치 반영 (${found.poll_support}%)`,
@@ -40,7 +42,7 @@ const getCandidateStats = (name: string) => {
             rationale_win: `지지율과 중심성(${centrality.toFixed(1)}) 기반 10,000회 몬테카를로 시뮬레이션 결과`
         };
     }
-    return { party: "기타", support: 5.0, influence: 20, risk: 25, winProb: 15, scores: null, rationale_poll: '', rationale_intel: '', rationale_win: '' };
+    return { party: "기타", support: 5.0, influence: 20, risk: 25, resilience: 30, winProb: 15, scores: null, rationale_poll: '', rationale_intel: '', rationale_win: '' };
 };
 
 const getSimulationData = (names: string[]) => {
@@ -62,18 +64,29 @@ const getRealRelationships = (names: string[]) => {
 const CANDIDATE_COLORS = ["#3b82f6", "#ef4444", "#fbbf24", "#10b981", "#a855f7", "#ec4899"];
 
 // 커스텀 툴팁 컴포넌트
-const IntelTooltip = ({ title, content, children }: { title: string, content: string, children: React.ReactNode }) => {
+const IntelTooltip = ({ title, content, children, side = "top" }: { title: string, content: string, children: React.ReactNode, side?: "top" | "bottom" | "left" | "right" }) => {
     const [show, setShow] = useState(false);
     return (
         <div className="relative inline-block" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
             {children}
             <AnimatePresence>
                 {show && (
-                    <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }} className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-64 z-[500] pointer-events-none">
-                        <div className="bg-[#0f1115] border border-blue-500/30 p-4 rounded-2xl shadow-2xl backdrop-blur-2xl">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className={`absolute z-[1000] pointer-events-none whitespace-normal
+                            ${side === "top" ? "bottom-full left-1/2 -translate-x-1/2 mb-4" : ""}
+                            ${side === "right" ? "left-full top-1/2 -translate-y-1/2 ml-4" : ""}
+                        `}
+                    >
+                        <div className="bg-[#0f1115] border border-blue-500/30 p-4 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.2)] backdrop-blur-2xl w-64">
                             <p className="text-[10px] font-black uppercase text-blue-500 mb-1">{title}</p>
                             <p className="text-xs font-bold leading-relaxed text-gray-300">{content}</p>
-                            <div className="absolute top-full left-1/2 -translate-x-1/2 w-3 h-3 bg-[#0f1115] border-r border-b border-blue-500/30 rotate-45 -mt-1.5"></div>
+                            <div className={`absolute w-3 h-3 bg-[#0f1115] border-blue-500/30 rotate-45 
+                                ${side === "top" ? "top-full left-1/2 -translate-x-1/2 -mt-1.5 border-r border-b" : ""}
+                                ${side === "right" ? "right-full top-1/2 -translate-y-1/2 -mr-1.5 border-l border-b" : ""}
+                            `}></div>
                         </div>
                     </motion.div>
                 )}
@@ -150,20 +163,23 @@ export default function PolisightDashboard() {
                 <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center font-black italic shadow-2xl mb-16 cursor-pointer" onClick={() => setActiveView('dashboard')}>P</div>
                 <nav className="flex flex-col gap-10">
                     {[
-                        { id: 'dashboard', icon: LayoutDashboard },
-                        { id: 'network', icon: Share2 },
-                        { id: 'geo', icon: Globe },
-                        { id: 'scenario', icon: BrainCircuit }
+                        { id: 'dashboard', icon: LayoutDashboard, title: '메인 대시보드', desc: '전체 판세와 지지율 현황' },
+                        { id: 'network', icon: Share2, title: '네트워크 인텔리전스', desc: '정치적 역학 관계 분석' },
+                        { id: 'geo', icon: Globe, title: '지역 지배력 분석', desc: '시/군별 권역 장악도 지도' },
+                        { id: 'stress', icon: HeartPulse, title: '위기 탄력 점검', desc: '부정 이슈 대응 및 맷집 지표' },
+                        { id: 'sentiment', icon: MessageCircle, title: '감성 및 브랜드', desc: '민심 모멘텀과 인식 키워드' },
+                        { id: 'scenario', icon: BrainCircuit, title: '시나리오 랩', desc: '가상 이벤트 파급력 시뮬레이션' }
                     ].map((item) => (
-                        <button key={item.id} onClick={() => setActiveView(item.id)} className={`transition-all ${activeView === item.id ? 'text-blue-500' : 'text-gray-600 hover:text-white'}`}>
-                            <item.icon size={26} />
-                        </button>
+                        <IntelTooltip key={item.id} title={item.title} content={item.desc} side="right">
+                            <button onClick={() => setActiveView(item.id)} className={`transition-all ${activeView === item.id ? 'text-blue-500 scale-125' : 'text-gray-600 hover:text-white hover:scale-110'}`}>
+                                <item.icon size={26} />
+                            </button>
+                        </IntelTooltip>
                     ))}
                 </nav>
                 <div className="mt-auto flex flex-col gap-8 mb-4">
                     <button onClick={() => setIsManualOpen(true)} className="text-blue-400 hover:text-blue-300 transition-all group relative">
                         <HelpCircle size={26} />
-                        <span className="absolute left-full ml-4 px-3 py-1 bg-blue-600 text-[10px] font-black uppercase rounded opacity-0 group-hover:opacity-100 whitespace-nowrap">사용 가이드</span>
                     </button>
                 </div>
             </aside>
@@ -309,7 +325,141 @@ export default function PolisightDashboard() {
                             </motion.div>
                         )}
 
-                        {/* 시나리오 랩 섹션 (기존 코드 유지) */}
+                        {activeView === 'geo' && (
+                            <motion.div key="geo" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col">
+                                <section className="mb-12"><h2 className="text-4xl font-black italic uppercase">Regional Dominance Map</h2><p className="text-gray-500 text-xs font-bold uppercase tracking-[0.4em]">기초의원 및 지지세 기반 시/군별 장악도</p></section>
+                                <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-10">
+                                    <div className="lg:col-span-2 glass rounded-[3rem] p-10 relative overflow-hidden">
+                                        <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+                                        <div className="relative h-full flex items-center justify-center">
+                                            {/* 단순화된 지도 그리드 형태 */}
+                                            <div className="grid grid-cols-4 gap-4 w-full h-full max-w-2xl bg-white/5 p-4 rounded-3xl border border-white/10">
+                                                {["청주", "충주", "제천", "단양", "음성", "진천", "괴산", "증평", "보은", "옥천", "영동"].map((region) => {
+                                                    const top = (evidenceData.regional as any[] || [])
+                                                        .filter((r: any) => r.region === region)
+                                                        .sort((a: any, b: any) => parseFloat(b.final_score) - parseFloat(a.final_score))[0];
+                                                    return (
+                                                        <div key={region} className="p-4 bg-white/[0.03] border border-white/10 rounded-2xl flex flex-col justify-center items-center gap-2 hover:bg-blue-600/20 transition-all cursor-crosshair">
+                                                            <span className="text-[10px] font-black uppercase text-gray-500">{region}</span>
+                                                            <span className="text-lg font-black italic">{top ? top.candidate : '-'}</span>
+                                                            <span className="text-[8px] font-black text-blue-400">SCORE: {top ? parseFloat(top.final_score).toFixed(1) : '0.0'}</span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="glass p-10 rounded-[3rem] flex flex-col">
+                                        <h3 className="text-xl font-black uppercase italic mb-8 text-blue-400">Regional Ranking</h3>
+                                        <div className="space-y-4 overflow-y-auto custom-scrollbar">
+                                            {targetNames.map((name) => {
+                                                const regions = (evidenceData.regional as any[] || [])
+                                                    .filter((r: any) => r.candidate === name)
+                                                    .sort((a: any, b: any) => parseFloat(b.final_score) - parseFloat(a.final_score));
+                                                return (
+                                                    <div key={name} className="p-6 bg-white/[0.03] rounded-3xl border border-white/5">
+                                                        <p className="text-lg font-black italic mb-4">{name}</p>
+                                                        <div className="space-y-2">
+                                                            {regions.slice(0, 3).map((r: any, idx: number) => (
+                                                                <div key={idx} className="flex justify-between items-center text-[10px] font-bold">
+                                                                    <span className="text-gray-500">{idx + 1}. {r.region}</span>
+                                                                    <span className="text-blue-500">{parseFloat(r.final_score).toFixed(1)} pt</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeView === 'stress' && (
+                            <motion.div key="stress" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col">
+                                <section className="mb-12"><h2 className="text-4xl font-black italic uppercase">Resilience Stress Test</h2><p className="text-gray-500 text-xs font-bold uppercase tracking-[0.4em]">부정 이슈 발생 시 후보별 대응력 및 회복 탄력성</p></section>
+                                <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-10">
+                                    <div className="glass rounded-[3rem] p-10 flex flex-col justify-center">
+                                        <h3 className="text-xl font-black uppercase italic mb-10 flex items-center gap-3"><AlertTriangle className="text-orange-500" /> Stress Tolerance Map</h3>
+                                        <ResponsiveContainer width="100%" height={400}>
+                                            <RadarChart data={multiStats}>
+                                                <PolarGrid stroke="#333" />
+                                                <PolarAngleAxis dataKey="name" stroke="#666" fontSize={12} fontWeight="bold" />
+                                                <Radar name="Resilience" dataKey="resilience" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.3} />
+                                                <Radar name="Support" dataKey="support" stroke="#ef4444" fill="#ef4444" fillOpacity={0.1} />
+                                                <Tooltip contentStyle={{ backgroundColor: '#0a0a0b', border: '1px solid #333' }} />
+                                                <Legend />
+                                            </RadarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                    <div className="space-y-6 overflow-y-auto custom-scrollbar">
+                                        {(evidenceData.stress as any[] || []).map((s: any) => (
+                                            <div key={s.candidate} className="p-8 bg-white/[0.02] border border-white/5 rounded-[2.5rem] hover:border-orange-500/50 transition-all">
+                                                <div className="flex justify-between items-center mb-6">
+                                                    <h4 className="text-2xl font-black italic">{s.candidate}</h4>
+                                                    <div className="px-4 py-1.5 bg-orange-500/10 border border-orange-500/30 rounded-full text-[10px] font-black text-orange-500 uppercase">Risk Level: {parseFloat(s.Avg_Risk).toFixed(1)}</div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-6">
+                                                    <div className="p-4 bg-white/5 rounded-2xl">
+                                                        <p className="text-[10px] font-black text-gray-500 uppercase mb-2">Resilience Score</p>
+                                                        <p className="text-3xl font-black italic text-blue-500">{parseFloat(s.Resilience_Score).toFixed(1)}</p>
+                                                    </div>
+                                                    <div className="p-4 bg-white/5 rounded-2xl">
+                                                        <p className="text-[10px] font-black text-gray-500 uppercase mb-2">Max Vulnerability</p>
+                                                        <p className="text-3xl font-black italic text-red-500">{parseFloat(s.Max_Vulnerability).toFixed(0)}</p>
+                                                    </div>
+                                                </div>
+                                                <p className="mt-6 text-[10px] font-black uppercase text-gray-600 flex items-center gap-2"><Zap size={12} className="text-yellow-500" /> Critical Scenario: <span className="text-gray-300">{s.Crit_Scenario}</span></p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {activeView === 'sentiment' && (
+                            <motion.div key="senti" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="h-full flex flex-col">
+                                <section className="mb-12"><h2 className="text-4xl font-black italic uppercase">Sentiment & Identity Hub</h2><p className="text-gray-500 text-xs font-bold uppercase tracking-[0.4em]">뉴스 빅데이터 기반 브랜드 키워드 및 여론 감성</p></section>
+                                <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-10">
+                                    {(multiStats as any[]).map((stat) => (
+                                        <div key={stat.name} className="glass p-10 rounded-[3rem] flex flex-col items-center text-center">
+                                            <div className="w-20 h-20 bg-blue-600/10 border border-blue-500/20 rounded-full flex items-center justify-center mb-8"><User size={40} className="text-blue-500" /></div>
+                                            <h3 className="text-3xl font-black italic mb-2 uppercase">{stat.name}</h3>
+                                            <p className="text-xs font-black text-gray-500 mb-10 uppercase tracking-widest">{stat.party}</p>
+
+                                            <div className="w-full space-y-8">
+                                                <div>
+                                                    <p className="text-[10px] font-black text-gray-500 uppercase mb-4 flex items-center justify-center gap-2"><Hash size={12} /> Key Identity Keywords</p>
+                                                    <div className="flex flex-wrap justify-center gap-3">
+                                                        {(evidenceData.relationships as any[])
+                                                            .filter((rel: any) => rel.person1 === stat.name || rel.person2 === stat.name)
+                                                            .map((rel: any) => rel.keyword)
+                                                            .filter((v, i, a) => a.indexOf(v) === i)
+                                                            .slice(0, 5)
+                                                            .map((kw: any) => (
+                                                                <span key={kw} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase hover:bg-blue-600/20 transition-all">{kw}</span>
+                                                            ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="pt-8 border-t border-white/5">
+                                                    <p className="text-[10px] font-black text-gray-500 uppercase mb-4 flex items-center justify-center gap-2"><Activity size={12} /> News Sentiment Flow</p>
+                                                    <div className="flex items-center gap-4 px-6">
+                                                        <div className="h-4 flex-1 bg-red-500/20 rounded-full overflow-hidden flex">
+                                                            <div className="h-full bg-blue-500 transition-all" style={{ width: '65%' }} />
+                                                            <div className="h-full bg-red-500 transition-all" style={{ width: '35%' }} />
+                                                        </div>
+                                                        <span className="text-xs font-black italic text-blue-500">65% Pos.</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+
                         {activeView === 'scenario' && (
                             <motion.div key="sce" initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} className="h-full max-w-5xl mx-auto flex flex-col">
                                 <section className="mb-20 text-center">
@@ -498,8 +648,8 @@ export default function PolisightDashboard() {
                             </div>
                             <div className="flex-1 overflow-y-auto custom-scrollbar space-y-16">
                                 <div className="relative pl-16"><div className="absolute left-0 top-0 w-10 h-10 bg-white/5 border border-white/10 rounded-full flex items-center justify-center font-black text-blue-500">01</div><h3 className="text-xl font-black italic mb-6">후보자 분석 가동</h3><p className="text-gray-400 leading-relaxed">검색창에 후보자명을 입력하고 '인텔리전스 가동'을 눌러 활성 데이터를 로드합니다.</p></div>
-                                <div className="relative pl-16"><div className="absolute left-0 top-0 w-10 h-10 bg-white/5 border border-white/10 rounded-full flex items-center justify-center font-black text-blue-500">02</div><h3 className="text-xl font-black italic mb-6">툴팁 근거 확인</h3><p className="text-gray-400 leading-relaxed">모든 수치(지지율, 승률, 인텔 스코어) 위로 마우스를 가져가면 산출 근거가 메모 형식으로 나타납니다.</p></div>
-                                <div className="relative pl-16"><div className="absolute left-0 top-0 w-10 h-10 bg-white/5 border border-white/10 rounded-full flex items-center justify-center font-black text-blue-500">03</div><h3 className="text-xl font-black italic mb-6">전략 리포트</h3><p className="text-gray-400 leading-relaxed">후보자 카드의 하단 버튼이나 상단 'Total Intelligence Report' 버튼을 눌러 상세 분석 레포트를 열람하십시오.</p></div>
+                                <div className="relative pl-16"><div className="absolute left-0 top-0 w-10 h-10 bg-white/5 border border-white/10 rounded-full flex items-center justify-center font-black text-blue-500">02</div><h3 className="text-xl font-black italic mb-6">고급 전술 메뉴 활용</h3><p className="text-gray-400 leading-relaxed">사이드바의 각 아이콘(지도, 위기 관리, 브랜드 분석 등)을 통해 고급 지표별 정밀 인터페이스로 전환할 수 있습니다.</p></div>
+                                <div className="relative pl-16"><div className="absolute left-0 top-0 w-10 h-10 bg-white/5 border border-white/10 rounded-full flex items-center justify-center font-black text-blue-500">03</div><h3 className="text-xl font-black italic mb-6">결과 근거 확인</h3><p className="text-gray-400 leading-relaxed">모든 수치와 섹션 제목 위로 마우스를 가져가면 데이터 산출 근거가 툴팁으로 표시됩니다.</p></div>
                             </div>
                         </motion.div>
                     </div>
