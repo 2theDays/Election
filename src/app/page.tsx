@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import {
     Users, Map, ShieldAlert, Zap, TrendingUp, Search,
-    ChevronRight, Activity, Bell
+    ChevronRight, Activity, Bell, Settings
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
