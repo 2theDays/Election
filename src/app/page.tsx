@@ -154,6 +154,29 @@ export default function PolisightDashboard() {
         }, 1500);
     };
 
+    // --- 신설: 전략 시뮬레이션 상태 ---
+    const [allianceSetup, setAllianceSetup] = useState({ leader: '', partner: '' });
+    const [allianceResult, setAllianceResult] = useState(null);
+    const [crisisSetup, setCrisisSetup] = useState({ target: '', type: '' });
+    const [crisisResult, setCrisisResult] = useState(null);
+
+    const runAllianceSim = () => {
+        if (!allianceSetup.leader || !allianceSetup.partner) return;
+        const s1 = getCandidateStats(allianceSetup.leader);
+        const s2 = getCandidateStats(allianceSetup.partner);
+        const combinedPoll = s1.support + (s2.support * 0.7); // 70% 흡수 가정
+        const combinedWin = Math.min(99, s1.winProb + (s2.winProb * 0.4));
+        setAllianceResult({ poll: combinedPoll.toFixed(1), win: Math.round(combinedWin) });
+    };
+
+    const runCrisisSim = () => {
+        if (!crisisSetup.target || !crisisSetup.type) return;
+        const penalty = crisisSetup.type === '스캔들' ? 8 : crisisSetup.type === '정책실패' ? 5 : 3;
+        const resilience = getCandidateStats(crisisSetup.target).resilience;
+        const finalPenalty = penalty * (1 - resilience / 100);
+        setCrisisResult({ drop: finalPenalty.toFixed(1) });
+    };
+
     if (!mounted) return null;
 
     return (
@@ -439,9 +462,53 @@ export default function PolisightDashboard() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <button className="mt-10 w-full py-4 bg-blue-600 hover:bg-blue-500 rounded-2xl font-black text-sm uppercase shadow-2xl shadow-blue-600/40 transition-all">
-                                                작전 실행 명령서(PDF) 생성
-                                            </button>
+                                        </div>
+
+                                        {/* 5. 통합 단일화 & 위기 시뮬레이터 (추가 섹션) */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div className="glass p-8 rounded-[2.5rem] border border-emerald-500/20">
+                                                <h4 className="text-xs font-black uppercase text-emerald-500 mb-6 flex items-center gap-2"><Link2 size={14} /> 단일화 시뮬레이터</h4>
+                                                <div className="space-y-4">
+                                                    <select onChange={(e) => setAllianceSetup({ ...allianceSetup, leader: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-[10px] font-black uppercase text-white outline-none">
+                                                        <option value="">본체 후보 선택</option>
+                                                        {candidatesData.candidates.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                                                    </select>
+                                                    <select onChange={(e) => setAllianceSetup({ ...allianceSetup, partner: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-[10px] font-black uppercase text-white outline-none">
+                                                        <option value="">흡수 후보 선택</option>
+                                                        {candidatesData.candidates.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                                                    </select>
+                                                    <button onClick={runAllianceSim} className="w-full py-3 bg-emerald-600 rounded-xl text-[10px] font-black uppercase hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/20">흡수 시너지 계산</button>
+                                                    {allianceResult && (
+                                                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-center">
+                                                            <p className="text-[10px] font-black text-gray-400 uppercase">Combined Forecast</p>
+                                                            <p className="text-xl font-black italic text-emerald-400">{allianceResult.poll}% / Win {allianceResult.win}%</p>
+                                                        </motion.div>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="glass p-8 rounded-[2.5rem] border border-red-500/20">
+                                                <h4 className="text-xs font-black uppercase text-red-500 mb-6 flex items-center gap-2"><ShieldAlert size={14} /> 위기 타격 시뮬레이터</h4>
+                                                <div className="space-y-4">
+                                                    <select onChange={(e) => setCrisisSetup({ ...crisisSetup, target: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-[10px] font-black uppercase text-white outline-none">
+                                                        <option value="">대상 후보 선택</option>
+                                                        {candidatesData.candidates.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                                                    </select>
+                                                    <select onChange={(e) => setCrisisSetup({ ...crisisSetup, type: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-[10px] font-black uppercase text-white outline-none">
+                                                        <option value="">위기 유형 선택</option>
+                                                        <option value="스캔들">대형 개인 스캔들</option>
+                                                        <option value="정책실패">치명적 정책 실패</option>
+                                                        <option value="설화">말실수/설화</option>
+                                                    </select>
+                                                    <button onClick={runCrisisSim} className="w-full py-3 bg-red-600 rounded-xl text-[10px] font-black uppercase hover:bg-red-500 transition-all shadow-lg shadow-red-500/20">타격 데미지 측정</button>
+                                                    {crisisResult && (
+                                                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-center">
+                                                            <p className="text-[10px] font-black text-gray-400 uppercase">Expected Drop</p>
+                                                            <p className="text-xl font-black italic text-red-500">-{crisisResult.drop}%</p>
+                                                        </motion.div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
