@@ -383,17 +383,31 @@ export default function PolisightDashboard() {
                                         {/* Row 3: Final Intelligence Summary */}
                                         <section className="bg-blue-600 p-16 rounded-[4rem] shadow-2xl shadow-blue-600/30 relative overflow-hidden group">
                                             <div className="absolute top-0 right-0 p-12 opacity-10 group-hover:scale-125 transition-transform"><BookOpen size={200} /></div>
-                                            <h5 className="text-3xl font-black italic text-white mb-10 flex items-center gap-6">
-                                                <Zap className="text-yellow-400 fill-yellow-400" /> 폴리사이트 종합 전략 권고
-                                            </h5>
+                                            <div className="flex justify-between items-start mb-10">
+                                                <h5 className="text-3xl font-black italic text-white flex items-center gap-6">
+                                                    <Zap className="text-yellow-400 fill-yellow-400" /> 폴리사이트 종합 전략 권고
+                                                </h5>
+                                                <div className="px-4 py-2 bg-white/20 rounded-xl border border-white/20 backdrop-blur-md">
+                                                    <p className="text-[10px] font-black text-blue-100 uppercase tracking-widest">Analysis Target</p>
+                                                    <p className="text-xs font-bold text-white">{multiStats.sort((a, b) => b.winProb - a.winProb)[0].name} VS {multiStats.sort((a, b) => b.winProb - a.winProb)[1]?.name || '추격 후보'}</p>
+                                                </div>
+                                            </div>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                                 <div className="p-8 bg-white/10 rounded-3xl border border-white/10">
                                                     <h6 className="text-[12px] font-black text-blue-200 uppercase mb-4 tracking-widest">Main Scenario</h6>
-                                                    <p className="text-white text-base leading-relaxed">충북 남부권의 {targetNames[1]} 후보 지지세가 정체기에 접어들었습니다. {targetNames[0]} 후보가 청주 흥덕/상당 지역의 3040 세대를 선점할 경우, 골든크로스 없이 승리가 확정될 가능성이 농후합니다.</p>
+                                                    <p className="text-white text-base leading-relaxed">
+                                                        현재 지표상 <b>{multiStats.sort((a, b) => b.winProb - a.winProb)[1]?.name || '차순위'} 후보</b>의 지지세가 정체기에 접어든 반면,
+                                                        <b>{multiStats.sort((a, b) => b.winProb - a.winProb)[0].name} 후보</b>는 청주권 3040 세대에서 확장성을 보이고 있습니다.
+                                                        이 추세가 유지될 경우 '골든크로스' 없는 독주 체제가 굳어질 가능성이 높습니다.
+                                                    </p>
                                                 </div>
                                                 <div className="p-8 bg-white/10 rounded-3xl border border-white/10">
                                                     <h6 className="text-[12px] font-black text-blue-200 uppercase mb-4 tracking-widest">Critical Alert</h6>
-                                                    <p className="text-white text-base leading-relaxed">전체 후보자군 사이의 지지층 중복도가 22% 이상으로 나타납니다. 이는 단 한 번의 네트워크 스캔들로도 지지층이 도미노처럼 무너질 수 있는 고위험 혼전 구조임을 의미합니다.</p>
+                                                    <p className="text-white text-base leading-relaxed">
+                                                        전체 후보자군 사이의 지지층 중복도가 22% 이상으로 나타납니다.
+                                                        특히 중도층 내에서의 {multiStats.map(s => s.name).join(', ')} 후보 간 선호도 교차가 심하므로,
+                                                        네거티브 이슈 발생 시 지지층이 도미노처럼 무너질 수 있는 혼전 구조입니다.
+                                                    </p>
                                                 </div>
                                             </div>
                                         </section>
