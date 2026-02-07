@@ -172,9 +172,11 @@ export default function PolisightDashboard() {
                 <header className="relative z-50 px-10 py-6 border-b border-white/5 bg-black/20 backdrop-blur-xl flex justify-between items-center">
                     <h1 className="text-xl font-black italic tracking-tighter uppercase">POLISIGHT <span className="text-blue-500">INTEL SURFACE</span></h1>
                     <div className="flex gap-4">
-                        <button onClick={() => setIsTotalReportOpen(true)} className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 border border-blue-400/30 rounded-full text-xs font-black uppercase hover:scale-105 transition-all shadow-lg shadow-blue-600/20">
-                            <FileSearch size={14} /> Total Intelligence Report
-                        </button>
+                        <IntelTooltip title="Comprehensive Analysis Basis" content="네트워크, 지지율, 리스크 지표를 AI 오케스트레이터가 통합 분석하여 도출한 최신 전략 보고서입니다.">
+                            <button onClick={() => setIsTotalReportOpen(true)} className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 border border-blue-400/30 rounded-full text-xs font-black uppercase hover:scale-105 transition-all shadow-lg shadow-blue-600/20">
+                                <FileSearch size={14} /> Total Intelligence Report
+                            </button>
+                        </IntelTooltip>
                         <button onClick={() => setIsManualOpen(true)} className="flex items-center gap-2 px-6 py-2 bg-white/5 border border-white/10 rounded-full text-xs font-black uppercase hover:bg-white/10 transition-all">
                             <BookOpen size={14} /> MANUAL
                         </button>
@@ -199,7 +201,9 @@ export default function PolisightDashboard() {
                                     {(multiStats as any[]).map((stat, i) => (
                                         <div key={stat.name} className="glass p-10 rounded-[3rem] border border-white/5 hover:border-blue-500/40 transition-all relative group overflow-hidden bg-gradient-to-br from-white/[0.02] to-transparent">
                                             <div className="flex justify-between items-start mb-10">
-                                                <h4 className="text-4xl font-black italic cursor-pointer hover:text-blue-500 transition-all" onClick={() => { setSelectedCandidate(stat.name as any); setIsModalOpen(true); }}>{stat.name}</h4>
+                                                <IntelTooltip title="Tactical Surface" content="클릭 시 이 후보에 대한 뉴스 데이터 기반의 정밀 분석 리포트를 생성합니다.">
+                                                    <h4 className="text-4xl font-black italic cursor-pointer hover:text-blue-500 transition-all" onClick={() => { setSelectedCandidate(stat.name as any); setIsModalOpen(true); }}>{stat.name}</h4>
+                                                </IntelTooltip>
                                                 <div className="text-right">
                                                     <p className="text-[10px] font-black text-gray-500 mb-1 uppercase tracking-widest">Party Status</p>
                                                     <span className="px-3 py-1 bg-blue-500/10 border border-blue-500/30 rounded-full text-[10px] font-black text-blue-400">{stat.party}</span>
@@ -242,11 +246,15 @@ export default function PolisightDashboard() {
 
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                                     <div className="lg:col-span-2 glass p-10 h-[500px] rounded-[3rem]">
-                                        <h3 className="text-xl font-black italic mb-10 flex items-center gap-4 uppercase"><TrendingUp className="text-blue-500" /> 시뮬레이션 지지율 추이 (Monte Carlo)</h3>
+                                        <IntelTooltip title="Trend Simulation" content="deSolve 패키지 기반 동태적 모델을 활용한 10,000회 몬테카를로 시뮬레이션 결과값의 평균 추이입니다.">
+                                            <h3 className="text-xl font-black italic mb-10 flex items-center gap-4 uppercase cursor-help"><TrendingUp className="text-blue-500" /> 시뮬레이션 지지율 추이 (Monte Carlo)</h3>
+                                        </IntelTooltip>
                                         <ResponsiveContainer width="100%" height="80%"><AreaChart data={simData}><XAxis dataKey="month" /><YAxis /><Tooltip />{targetNames.map((n, i) => <Area key={n} dataKey={n} stroke={CANDIDATE_COLORS[i % CANDIDATE_COLORS.length]} fillOpacity={0.1} />)}</AreaChart></ResponsiveContainer>
                                     </div>
                                     <div className="glass p-10 rounded-[3rem] flex flex-col">
-                                        <h3 className="text-xl font-black italic mb-8 uppercase flex items-center gap-4"><ShieldAlert className="text-red-500" /> 작전 근거 (Relationship Evidence)</h3>
+                                        <IntelTooltip title="Direct Evidence List" content="뉴스 기사 텍스트에서 자연어 처리(NLP)를 통해 직접 추출된 후보 간의 관계 실인용구입니다.">
+                                            <h3 className="text-xl font-black italic mb-8 uppercase flex items-center gap-4 cursor-help"><ShieldAlert className="text-red-500" /> 작전 근거 (Relationship Evidence)</h3>
+                                        </IntelTooltip>
                                         <div className="flex-1 space-y-4 overflow-y-auto custom-scrollbar">
                                             {relMatrix.length > 0 ? (relMatrix as any[]).map((rel: any, i: number) => (
                                                 <div key={i} className="p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
