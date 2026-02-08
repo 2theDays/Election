@@ -157,6 +157,25 @@ export default function PolisightDashboard() {
         }, 1500);
     };
 
+    // --- 신설: 백엔드 엔진 제어 ---
+    const [isSyncing, setIsSyncing] = useState(false);
+    const runLiveSync = async () => {
+        setIsSyncing(true);
+        try {
+            const response = await fetch('http://localhost:3001/api/run-orchestrator', { method: 'POST' });
+            const data = await response.json();
+            if (data.success) {
+                alert("작전 성공: 백엔드 엔진 최신화 및 배포가 완료되었습니다.");
+            } else {
+                alert("작전 실패: " + data.error);
+            }
+        } catch (err) {
+            alert("로컬 프록시 서버 확인 필요: http://localhost:3001 이 가동 중인지 확인하세요.");
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+
     // --- 신설: 전략 시뮬레이션 상태 ---
     const [allianceSetup, setAllianceSetup] = useState({ leader: '', partner: '' });
     const [allianceResult, setAllianceResult] = useState<{ poll: string, win: number } | null>(null);
@@ -178,6 +197,47 @@ export default function PolisightDashboard() {
         const resilience = getCandidateStats(crisisSetup.target).resilience;
         const finalPenalty = penalty * (1 - resilience / 100);
         setCrisisResult({ drop: finalPenalty.toFixed(1) });
+    };
+
+    // --- 신설: 데이터 기반 동적 전략 도출 엔진 ---
+    const getDynamicPrescriptions = () => {
+        const prescriptions: any[] = [];
+        const sortedByPoll = [...multiStats].sort((a, b) => b.support - a.support);
+        const sortedByPR = [...multiStats].sort((a, b) => (b.scores?.페이지랭크 || 0) - (a.scores?.페이지랭크 || 0));
+
+        if (sortedByPR.length > 0) {
+            const topPR = sortedByPR[0];
+            prescriptions.push({
+                type: 'T',
+                title: `${topPR.name} 후보: 네트워크 헤게모니 방어`,
+                desc: `현재 PR(${topPR.scores?.페이지랭크 || '0.0'}) 지표상 허브 포지션 점유. 소속 정당 세력(BC: ${topPR.scores?.매개중심성 || '0.0'}) 결집을 통한 담론 독점 체제 유지 권고.`,
+                color: 'bg-blue-600'
+            });
+        }
+
+        const regionalData = evidenceData.regional as any[] || [];
+        const topRegion = [...regionalData].sort((a, b) => parseFloat(b.final_score) - parseFloat(a.final_score))[0];
+        if (topRegion) {
+            prescriptions.push({
+                type: 'O',
+                title: `${topRegion.candidate}: ${topRegion.region} 거점 장악력 극대화`,
+                desc: `해당 지역 지배력 점수 ${parseFloat(topRegion.final_score).toFixed(1)}로 도내 최고치 기록. 인접 권역으로의 데이터 중심성 전이(Centrality Spillover) 전술 필요.`,
+                color: 'bg-emerald-600'
+            });
+        }
+
+        const stressData = evidenceData.stress as any[] || [];
+        const highRisk = [...stressData].sort((a, b) => parseFloat(b.Avg_Risk) - parseFloat(a.Avg_Risk))[0];
+        if (highRisk) {
+            prescriptions.push({
+                type: 'A',
+                title: `${highRisk.candidate}: 리스크 임계점 관리`,
+                desc: `Avg Risk ${parseFloat(highRisk.Avg_Risk).toFixed(1)} 도출. 위기 탄력성(${parseFloat(highRisk.Resilience_Score).toFixed(1)}) 대비 공격 노출도가 높음. 네거티브 방어막(Counter-Frame) 즉시 가동 필수.`,
+                color: 'bg-red-600'
+            });
+        }
+
+        return prescriptions;
     };
 
     if (!mounted) return null;
@@ -360,6 +420,14 @@ export default function PolisightDashboard() {
                                         <p className="text-gray-500 text-xs font-bold uppercase tracking-[0.4em]">데이터 가중치 분석을 통한 승리 확률 최적화 및 연대 시나리오</p>
                                     </div>
                                     <div className="flex gap-4">
+                                        <button
+                                            onClick={runLiveSync}
+                                            disabled={isSyncing}
+                                            className={`px-8 py-3 rounded-2xl flex items-center gap-4 transition-all ${isSyncing ? 'bg-gray-800 text-gray-500' : 'bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/30'}`}
+                                        >
+                                            <Cpu className={isSyncing ? 'animate-spin' : ''} size={18} />
+                                            <span className="text-xs font-black uppercase tracking-widest">{isSyncing ? 'Synchronizing Intelligence...' : 'Execute Live Intelligence Sync'}</span>
+                                        </button>
                                         <div className="px-6 py-3 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center gap-4">
                                             <span className="text-[10px] font-black text-blue-500 uppercase">Analysis Confidence</span>
                                             <span className="text-xl font-black italic">94.2%</span>
@@ -453,20 +521,15 @@ export default function PolisightDashboard() {
                                         <div className="glass p-10 rounded-[3rem] border border-blue-600/30 bg-blue-600/5 shadow-[0_0_50px_rgba(59,130,246,0.1)]">
                                             <h3 className="text-xl font-black italic mb-6 flex items-center gap-4 uppercase text-blue-400"><BrainCircuit /> 전략 지휘 명령 (AI Prescription)</h3>
                                             <div className="space-y-6">
-                                                <div className="flex gap-4 items-start">
-                                                    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0 font-black italic">T</div>
-                                                    <div>
-                                                        <p className="text-sm font-black italic text-blue-100">거점 클러스터 방어</p>
-                                                        <p className="text-xs text-gray-400 mt-1 leading-relaxed">청주권 지지수치가 타 지역 대비 소폭 하락( -1.2%) 중. 지역 화폐 및 문화 인쇄 클러스터 공약 강조 필요.</p>
+                                                {getDynamicPrescriptions().map((p, idx) => (
+                                                    <div key={idx} className="flex gap-4 items-start">
+                                                        <div className={`w-8 h-8 rounded-lg ${p.color} flex items-center justify-center shrink-0 font-black italic`}>{p.type}</div>
+                                                        <div>
+                                                            <p className="text-sm font-black italic text-white">{p.title}</p>
+                                                            <p className="text-xs text-gray-400 mt-1 leading-relaxed">{p.desc}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div className="flex gap-4 items-start">
-                                                    <div className="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center shrink-0 font-black italic">O</div>
-                                                    <div>
-                                                        <p className="text-sm font-black italic text-emerald-100">야권 단일화 모멘텀 관리</p>
-                                                        <p className="text-xs text-gray-400 mt-1 leading-relaxed">송기섭 후보와의 교육 인프라 공유 네트워크 강화 시 중도 층 8.5% 추가 확보 가능성 포착.</p>
-                                                    </div>
-                                                </div>
+                                                ))}
                                             </div>
                                         </div>
 

@@ -1,0 +1,33 @@
+{
+    "analysis": "가상 시나리오 분석: 2026 충북 지역 균형발전 특별법이 국회를 통과하였으며, 신용한 후보가 이를 자신의 정책 로드맵의 승리라고 선언함",
+    "impact_matrix": {
+        "신용한": {
+            "official": 0.2,
+            "private": 0.1,
+            "sentiment": 0.4,
+            "regional": 0.1,
+            "reason": "이슈 주도권 확보"
+        },
+        "노영민": {
+            "official": -0.1,
+            "private": 0.0,
+            "sentiment": -0.2,
+            "regional": -0.1,
+            "reason": "구체제 프레임 강화"
+        },
+        "송기섭": {
+            "official": 0.0,
+            "private": 0.0,
+            "sentiment": 0.1,
+            "regional": 0.2,
+            "reason": "지역 기반 강화"
+        },
+        "한범덕": {
+            "official": 0.0,
+            "private": 0.0,
+            "sentiment": 0.0,
+            "regional": 0.0,
+            "reason": "영향 미미"
+        }
+    }
+}
