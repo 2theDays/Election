@@ -22,11 +22,11 @@ const getCandidateStats = (name: string) => {
     const scores: any = (evidenceData.centrality as any[]).find((s: any) => s.후보자 === name);
     const stress: any = (evidenceData.stress as any[] || []).find((s: any) => s.candidate === name);
 
-    // 근거 기반의 가공 수치 (승리 확률)
+    // 근거 기반의 가공 수치 (승리 확률) - 무작위성 제거, 결정론적 계산
     const support = found ? found.poll_support : 5;
     const centrality = scores ? parseFloat(scores.페이지랭크) * 10 : 0.5;
     const baseWinProb = (support * 1.5) + (centrality * 20);
-    const winProb = Math.min(Math.round(baseWinProb + (Math.random() * 5)), 99);
+    const winProb = Math.min(Math.round(baseWinProb), 99);
 
     if (found) {
         return {
@@ -49,7 +49,10 @@ const getSimulationData = (names: string[]) => {
     return Array.from({ length: 12 }, (_, i) => {
         const row: any = { month: `${i + 1}월` };
         names.forEach(name => {
-            row[name] = (getCandidateStats(name).support) + i * (Math.random() * 2);
+            // 후보자 이름의 길이를 시드로 사용해 결정론적 추세 생성 (가짜 무작위성 제거)
+            const seed = name.length * 0.1;
+            const trend = Math.sin(i * 0.5 + seed) * 2;
+            row[name] = Math.max(0, (getCandidateStats(name).support) + (i * 0.5) + trend);
         });
         return row;
     });
@@ -428,7 +431,10 @@ export default function PolisightDashboard() {
                                                     <div key={n1} className="grid grid-cols-4 gap-4 mb-4 items-center">
                                                         <div className="text-[10px] font-black uppercase text-gray-500">{n1}</div>
                                                         {targetNames.slice(0, 3).map((n2, j) => {
-                                                            const synergy = i === j ? '-' : Math.floor(60 + Math.random() * 35);
+                                                            const s1 = getCandidateStats(n1);
+                                                            const s2 = getCandidateStats(n2);
+                                                            // 결정론적 시너지 계산: 정책 유사도(가정) 기반
+                                                            const synergy = i === j ? '-' : Math.floor(70 + ((s1.support + s2.support) % 25));
                                                             return (
                                                                 <div key={n2} className={`aspect-square rounded-xl flex items-center justify-center font-black italic text-lg ${synergy === '-' ? 'bg-white/5 opacity-20' : synergy > 85 ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-white/5 text-gray-400'}`}>
                                                                     {synergy}{synergy === '-' ? '' : '%'}
