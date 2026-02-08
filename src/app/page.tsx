@@ -9,7 +9,7 @@ import {
     Users, Map, ShieldAlert, Zap, TrendingUp, Search,
     ChevronRight, Activity, Bell, Cpu, BookOpen, LayoutDashboard, User, Globe, FileText, X, PieChart as PieIcon, BarChart3, Info,
     Share2, Layers, Compass, BrainCircuit, Newspaper, Link2, ExternalLink, HelpCircle, CheckCircle2, AlertTriangle, FileSearch, LineChart,
-    ShieldCheck, BarChartHorizontal, HeartPulse, MessageCircle, Hash
+    ShieldCheck, BarChartHorizontal, HeartPulse, MessageCircle, Hash, Trophy
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -156,9 +156,9 @@ export default function PolisightDashboard() {
 
     // --- 신설: 전략 시뮬레이션 상태 ---
     const [allianceSetup, setAllianceSetup] = useState({ leader: '', partner: '' });
-    const [allianceResult, setAllianceResult] = useState(null);
+    const [allianceResult, setAllianceResult] = useState<{ poll: string, win: number } | null>(null);
     const [crisisSetup, setCrisisSetup] = useState({ target: '', type: '' });
-    const [crisisResult, setCrisisResult] = useState(null);
+    const [crisisResult, setCrisisResult] = useState<{ drop: string } | null>(null);
 
     const runAllianceSim = () => {
         if (!allianceSetup.leader || !allianceSetup.partner) return;
