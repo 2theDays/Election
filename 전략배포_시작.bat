@@ -1,6 +1,16 @@
 @echo off
+chcp 65001 >nul
 title 2026 충북지사 전략 업데이트 센터
-cd /d "g:\My_Project\Coding 연습\충북도지사"
+
+pushd "%~dp0"
+
 echo [관리자] 전략 지휘본부 런처를 실행합니다...
-python commander_launcher.py
-pause
+py commander_launcher.py
+
+if %errorlevel% neq 0 (
+    echo.
+    echo [오류] 실행 중 에러가 발생했습니다.
+    pause
+)
+
+popd
