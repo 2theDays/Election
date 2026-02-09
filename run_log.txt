@@ -1,0 +1,16 @@
+Could not find platform independent libraries <prefix>
+============================================================
+   [ 2026 충북도지사 선거 전략 통합 지휘본부 v2.1 ]
+   분석 일시: 2026-02-09 21:26:12
+============================================================
+
+[1/7] 가상 시나리오 에이전트 분석...
+   └─ 예상 남은 시간: 약 85초 (전체 진척도: 0.0%)
+Traceback (most recent call last):
+  File "G:\My_Project\Coding 연습\충북도지사\main_orchestrator.py", line 118, in <module>
+    commander.execute()
+    ~~~~~~~~~~~~~~~~~^^
+  File "G:\My_Project\Coding 연습\충북도지사\main_orchestrator.py", line 107, in execute
+    print(f"   \u274c 단계 오류 발생 (건너뜀)")
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'cp949' codec can't encode character '\u274c' in position 3: illegal multibyte sequence

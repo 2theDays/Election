@@ -2,6 +2,7 @@ import os
 import subprocess
 import json
 import time
+import sys
 import pandas as pd
 from datetime import datetime
 from anthropic import Anthropic
@@ -15,8 +16,9 @@ class StrategyCommandCenter:
         self.vercel_url = "https://election-umber.vercel.app/"
         
         # 단계별 예상 소요 시간 (초)
+        python_exe = sys.executable
         self.stages = [
-            {"id": "EVENT", "name": "가상 시나리오 에이전트 분석", "cmd": "py political_event_agent.py", "eta": 15},
+            {"id": "EVENT", "name": "가상 시나리오 에이전트 분석", "cmd": f'"{python_exe}" political_event_agent.py', "eta": 15},
             {"id": "NETWORK", "name": "다층 네트워크 지표 산출", "cmd": f'"{self.r_path}" network_analysis_premium.R', "eta": 12},
             {"id": "GIS", "name": "지역 지배력 및 공간 분석", "cmd": f'"{self.r_path}" regional_gis_analysis.R', "eta": 10},
             {"id": "STRESS", "name": "리스크 스트레스 테스트", "cmd": f'"{self.r_path}" stress_test_engine.R', "eta": 8},
