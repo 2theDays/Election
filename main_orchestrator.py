@@ -5,12 +5,31 @@ import time
 import sys
 import pandas as pd
 from datetime import datetime
-from anthropic import Anthropic
+import google.generativeai as genai
+
+# .env 로드 함수
+def load_env():
+    try:
+        with open('.env', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'): continue
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    os.environ[key] = value.strip()
+    except: pass
+
+load_env()
 
 class StrategyCommandCenter:
     def __init__(self):
-        self.api_key = os.environ.get("ANTHROPIC_API_KEY")
-        self.client = Anthropic(api_key=self.api_key) if self.api_key else None
+        self.api_key = os.environ.get("GEMINI_API_KEY")
+        if self.api_key:
+            genai.configure(api_key=self.api_key)
+            self.model = genai.GenerativeModel("gemini-1.5-flash")
+        else:
+            self.model = None
+
         self.r_path = r"C:\Program Files\R\R-4.5.2\bin\Rscript.exe"
         self.repo_url = "https://github.com/2theDays/Election.git"
         self.vercel_url = "https://election-umber.vercel.app/"
@@ -31,15 +50,17 @@ class StrategyCommandCenter:
     def print_header(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         print("="*60)
-        print("   [ 2026 충북도지사 선거 전략 통합 지휘본부 v2.2 ]")
+        print("   [ 2026 충북도지사 선거 전략 통합 지휘본부 v2.3 (Gemini Engine) ]")
         print(f"   분석 일시: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("="*60)
 
     def run_cmd(self, cmd):
         try:
-            subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True)
+            # 실시간 출력을 위해 capture_output 제거
+            subprocess.run(cmd, shell=True, check=True)
             return True
-        except Exception:
+        except Exception as e:
+            print(f"Error: {e}")
             return False
 
     def git_sync(self):
@@ -56,23 +77,26 @@ class StrategyCommandCenter:
         return True
 
     def generate_strategic_report(self):
-        """AI 전략 리포트 생성 로직"""
-        if not self.client:
-            return "⚠️ API 키가 누락되어 전략 리포트가 생성되지 않았습니다."
+        """AI 전략 리포트 생성 로직 (Gemini)"""
+        if not self.model:
+            return "⚠️ GEMINI_API_KEY가 누락되어 전략 리포트가 생성되지 않았습니다."
         
         try:
             # 주요 분석 파일 로드
-            network = pd.read_csv("centrality_scores_multilayer.csv").to_string()
-            stress = pd.read_csv("stress_test_summary.csv").to_string()
+            try:
+                network = pd.read_csv("centrality_scores_multilayer.csv").to_string()
+            except:
+                network = "데이터 없음"
+                
+            try:
+                stress = pd.read_csv("stress_test_summary.csv").to_string()
+            except:
+                stress = "데이터 없음"
             
             prompt = f"당신은 선거 전략 수석 컨설턴트입니다. 다음 데이터를 바탕으로 승리 전략을 요약하세요.\n\n[네트워크]\n{network}\n\n[리스크]\n{stress}"
             
-            message = self.client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=2000,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return message.content[0].text
+            response = self.model.generate_content(prompt)
+            return response.text
         except Exception as e:
             return f"오류: {e}"
 

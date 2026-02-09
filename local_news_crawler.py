@@ -10,12 +10,28 @@ import json
 import pandas as pd
 from datetime import datetime
 import time
-from anthropic import Anthropic
+import google.generativeai as genai
 import os
 import re
 
-# Claude API 설정
-client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+# .env 로드 함수
+def load_env():
+    try:
+        with open('.env', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'): continue
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    os.environ[key] = value.strip()
+    except: pass
+
+load_env()
+
+# Gemini API 설정
+api_key = os.environ.get("GEMINI_API_KEY")
+if api_key:
+    genai.configure(api_key=api_key)
 
 # ============================================================================
 # 1. 충북 지역 신문사 RSS 주소 목록
@@ -299,13 +315,10 @@ class LocalNewsCollector:
 """
         
         try:
-            message = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=2000,
-                messages=[{"role": "user", "content": prompt}]
-            )
+            model = genai.GenerativeModel('gemini-1.5-flash')
+            response = model.generate_content(prompt)
             
-            response_text = message.content[0].text
+            response_text = response.text
             
             # JSON 추출
             json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', 
@@ -325,7 +338,7 @@ class LocalNewsCollector:
             return result.get('relationships', [])
             
         except Exception as e:
-            print(f"    Claude API 오류: {e}")
+            print(f"    Gemini API 오류: {e}")
             return []
     
     def process_articles(self, articles):
@@ -360,10 +373,10 @@ def main():
     print("="*60)
     
     # API 키 확인
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        print("\n⚠️  ANTHROPIC_API_KEY 환경변수가 설정되지 않았습니다.")
+    if not os.environ.get("GEMINI_API_KEY"):
+        print("\n⚠️  GEMINI_API_KEY 환경변수가 설정되지 않았습니다.")
         print("명령 프롬프트에서:")
-        print("  set ANTHROPIC_API_KEY=your-api-key")
+        print("  set GEMINI_API_KEY=your-api-key")
         return
     
     # 수집기 생성

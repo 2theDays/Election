@@ -6,10 +6,25 @@ Virtual Scenario Simulation Engine
 import json
 import os
 import re
-from anthropic import Anthropic
+import google.generativeai as genai
+import sys
+
+# .env 로드 함수
+def load_env():
+    try:
+        with open('.env', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith('#'): continue
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    os.environ[key] = value.strip()
+    except: pass
+
+load_env()
 
 # API 키 확인
-api_key = os.environ.get("ANTHROPIC_API_KEY")
+api_key = os.environ.get("GEMINI_API_KEY")
 
 class PoliticalEventAgent:
     def __init__(self):
@@ -19,25 +34,26 @@ class PoliticalEventAgent:
         except FileNotFoundError:
             self.candidates = []
             
+        if api_key:
+            genai.configure(api_key=api_key)
+            self.model = genai.GenerativeModel("gemini-1.5-flash")
+        else:
+            self.model = None
+
     def simulate_event(self, event_description):
         """정치적 사건이 각 후보의 지계에 미치는 영향 분석 (가상 시뮬레이션)"""
         
-        if not api_key:
+        if not self.model:
             return self._get_mock_result(event_description)
             
-        client = Anthropic(api_key=api_key)
         cand_names = [c['name'] for c in self.candidates]
         
         prompt = f"당신은 정치 전략 에이전트입니다. 사건: {event_description}. 대상: {', '.join(cand_names)}. " \
                  "각 후보의 official, private, sentiment, regional 지표 변화(-0.5~+0.5)를 JSON으로 분석하세요."
         
         try:
-            message = client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=2000,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            response_text = message.content[0].text
+            response = self.model.generate_content(prompt)
+            response_text = response.text
             json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
             return json.loads(json_match.group(0))
         except Exception as e:

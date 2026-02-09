@@ -1,1 +1,1 @@
-⚠️ API 키가 누락되어 전략 리포트가 생성되지 않았습니다.
+오류: 404 models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods.
