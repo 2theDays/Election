@@ -11,7 +11,7 @@ ORCHESTRATOR_PATH = "main_orchestrator.py"
 class TacticalLauncher:
     def __init__(self, root):
         self.root = root
-        self.root.title("2026 충북지사 전략 지휘본부 (Command Center v2.1)")
+        self.root.title("2026 충북지사 전략 지휘본부 (Command Center v2.2)")
         self.root.geometry("500x380")
         self.root.configure(bg="#0a0a0b")
         self.root.resizable(False, False)

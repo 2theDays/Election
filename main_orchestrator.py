@@ -18,6 +18,7 @@ class StrategyCommandCenter:
         # 단계별 예상 소요 시간 (초)
         python_exe = sys.executable
         self.stages = [
+            {"id": "NEWS", "name": "실시간 뉴스 & 여론조사 크롤링", "cmd": f'"{python_exe}" local_news_crawler.py', "eta": 30},
             {"id": "EVENT", "name": "가상 시나리오 에이전트 분석", "cmd": f'"{python_exe}" political_event_agent.py', "eta": 15},
             {"id": "NETWORK", "name": "다층 네트워크 지표 산출", "cmd": f'"{self.r_path}" network_analysis_premium.R', "eta": 12},
             {"id": "GIS", "name": "지역 지배력 및 공간 분석", "cmd": f'"{self.r_path}" regional_gis_analysis.R', "eta": 10},
@@ -30,7 +31,7 @@ class StrategyCommandCenter:
     def print_header(self):
         os.system('cls' if os.name == 'nt' else 'clear')
         print("="*60)
-        print("   [ 2026 충북도지사 선거 전략 통합 지휘본부 v2.1 ]")
+        print("   [ 2026 충북도지사 선거 전략 통합 지휘본부 v2.2 ]")
         print(f"   분석 일시: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("="*60)
 
