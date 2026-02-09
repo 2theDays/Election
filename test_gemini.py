@@ -24,8 +24,14 @@ def load_env():
 load_env()
 
 try:
+    print("Available models:")
+    for m in genai.list_models():
+        if 'generateContent' in m.supported_generation_methods:
+            print(f"- {m.name}")
+    
+    # Try gemini-1.5-flash
     model = genai.GenerativeModel('gemini-1.5-flash')
     resp = model.generate_content("Hello Gemini!")
-    print(f"Response: {resp.text}")
+    print(f"Response (gemini-1.5-flash): {resp.text}")
 except Exception as e:
     print(f"GenAI Error: {e}")
