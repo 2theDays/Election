@@ -5,7 +5,7 @@ title 2026 충북지사 전략 업데이트 센터
 pushd "%~dp0"
 
 echo [관리자] 전략 지휘본부 런처를 실행합니다...
-py commander_launcher.py
+".venv\Scripts\python.exe" commander_launcher.py
 
 if %errorlevel% neq 0 (
     echo.

@@ -59,8 +59,8 @@ class TacticalLauncher:
 
     def start_sync(self):
         # API 키 체크
-        if not os.environ.get("ANTHROPIC_API_KEY"):
-            messagebox.showwarning("경고", "ANTHROPIC_API_KEY 환경 변수가 설정되지 않았습니다.\n일부 AI 리포트 기능이 제한될 수 있습니다.")
+        if not os.environ.get("GEMINI_API_KEY") and not os.path.exists(".env"):
+            messagebox.showwarning("주의", "GEMINI_API_KEY가 설정되지 않은 것 같습니다.\n환경 변수나 .env 파일을 확인해주세요.")
             
         self.deploy_btn.config(state="disabled", text="ANALYZING...\n\n(작전 수행 중)", bg="#222")
         self.progress['value'] = 0
@@ -70,11 +70,19 @@ class TacticalLauncher:
         try:
             # main_orchestrator.py 실행 가상 환경이 아닌 현재 Python으로 실행
             # -u 옵션으로 실시간 스트리밍
-            process = subprocess.Popen([sys.executable, "-u", ORCHESTRATOR_PATH], 
+            # UTF-8 강제 환경변수 설정
+            env = os.environ.copy()
+            env["PYTHONIOENCODING"] = "utf-8"
+            
+            # venv 파이썬 사용 강제 (현재 실행 중인 sys.executable이 venv라면 그대로 사용)
+            py_exe = sys.executable
+            
+            process = subprocess.Popen([py_exe, "-u", ORCHESTRATOR_PATH], 
                                      stdout=subprocess.PIPE, 
                                      stderr=subprocess.STDOUT, 
                                      text=True, 
                                      shell=True,
+                                     env=env,
                                      encoding='utf-8',
                                      errors='replace')
             

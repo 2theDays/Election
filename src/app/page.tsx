@@ -66,36 +66,107 @@ const getRealRelationships = (names: string[]) => {
 
 const CANDIDATE_COLORS = ["#3b82f6", "#ef4444", "#fbbf24", "#10b981", "#a855f7", "#ec4899"];
 
-// 커스텀 툴팁 컴포넌트
+import { createPortal } from 'react-dom';
+
+// 커스텀 툴팁 컴포넌트: React Portal을 사용하여 모든 레이어 위로 강제 렌더링
 const IntelTooltip = ({ title, content, children, side = "top" }: { title: string, content: string, children: React.ReactNode, side?: "top" | "bottom" | "left" | "right" }) => {
     const [show, setShow] = useState(false);
+    const triggerRef = useRef<HTMLDivElement>(null);
+    const [coords, setCoords] = useState({ top: 0, left: 0 });
+
+    useEffect(() => {
+        if (show && triggerRef.current) {
+            const updatePosition = () => {
+                if (!triggerRef.current) return;
+                const rect = triggerRef.current.getBoundingClientRect();
+                const scrollX = window.scrollX;
+                const scrollY = window.scrollY;
+
+                let top = 0;
+                let left = 0;
+
+                // 중앙값 (문서 전체 기준)
+                const centerX = rect.left + scrollX + rect.width / 2;
+                const centerY = rect.top + scrollY + rect.height / 2;
+
+                if (side === "top") {
+                    top = rect.top + scrollY - 10;
+                    left = centerX;
+                } else if (side === "bottom") {
+                    top = rect.bottom + scrollY + 10;
+                    left = centerX;
+                } else if (side === "right") {
+                    top = centerY;
+                    left = rect.right + scrollX + 10;
+                } else if (side === "left") {
+                    top = centerY;
+                    left = rect.left + scrollX - 10;
+                }
+                setCoords({ top, left });
+            };
+
+            updatePosition();
+            window.addEventListener('resize', updatePosition);
+            return () => window.removeEventListener('resize', updatePosition);
+        }
+    }, [show, side]);
+
     return (
-        <div className="relative inline-block" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+        <div ref={triggerRef} className="relative inline-block" onMouseEnter={() => updatePosition() || setShow(true)} onMouseLeave={() => setShow(false)}>
             {children}
-            <AnimatePresence>
-                {show && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className={`absolute z-[1000] pointer-events-none whitespace-normal
-                            ${side === "top" ? "bottom-full left-1/2 -translate-x-1/2 mb-4" : ""}
-                            ${side === "right" ? "left-full top-1/2 -translate-y-1/2 ml-4" : ""}
-                        `}
-                    >
-                        <div className="bg-[#0f1115] border border-blue-500/30 p-4 rounded-2xl shadow-[0_0_30px_rgba(59,130,246,0.2)] backdrop-blur-2xl w-64">
-                            <p className="text-[10px] font-black uppercase text-blue-500 mb-1">{title}</p>
-                            <p className="text-xs font-bold leading-relaxed text-gray-300">{content}</p>
-                            <div className={`absolute w-3 h-3 bg-[#0f1115] border-blue-500/30 rotate-45 
-                                ${side === "top" ? "top-full left-1/2 -translate-x-1/2 -mt-1.5 border-r border-b" : ""}
-                                ${side === "right" ? "right-full top-1/2 -translate-y-1/2 -mr-1.5 border-l border-b" : ""}
-                            `}></div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            {show && typeof document !== 'undefined' && createPortal(
+                <AnimatePresence>
+                    {show && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                            style={{
+                                position: 'absolute',
+                                top: coords.top,
+                                left: coords.left,
+                                zIndex: 99999,
+                                pointerEvents: 'none'
+                            }}
+                            className={`
+                                ${side === "top" ? "-translate-x-1/2 -translate-y-full" : ""}
+                                ${side === "bottom" ? "-translate-x-1/2" : ""}
+                                ${side === "right" ? "-translate-y-1/2" : ""}
+                                ${side === "left" ? "-translate-x-full -translate-y-1/2" : ""}
+                            `}
+                        >
+                            <div className="bg-[#0f1115]/95 border border-blue-500/40 p-5 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] backdrop-blur-xl w-72 relative">
+                                <p className="text-[10px] font-black uppercase text-blue-400 mb-2 tracking-wider flex items-center gap-2">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> {title}
+                                </p>
+                                <p className="text-xs font-bold leading-relaxed text-gray-200">{content}</p>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
         </div>
     );
+
+    // 호버 이벤트 시 좌표 즉시 갱신용 헬퍼
+    function updatePosition() {
+        if (!triggerRef.current) return;
+        const rect = triggerRef.current.getBoundingClientRect();
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY;
+
+        let top = 0;
+        let left = 0;
+        const centerX = rect.left + scrollX + rect.width / 2;
+        const centerY = rect.top + scrollY + rect.height / 2;
+
+        if (side === "top") { top = rect.top + scrollY - 10; left = centerX; }
+        else if (side === "bottom") { top = rect.bottom + scrollY + 10; left = centerX; }
+        else if (side === "right") { top = centerY; left = rect.right + scrollX + 10; }
+        else if (side === "left") { top = centerY; left = rect.left + scrollX - 10; }
+        setCoords({ top, left });
+    }
 };
 
 export default function PolisightDashboard() {
@@ -302,7 +373,7 @@ export default function PolisightDashboard() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 mb-20">
                                     {(multiStats as any[]).map((stat, i) => (
-                                        <div key={stat.name} className="glass p-10 rounded-[3rem] border border-white/5 hover:border-blue-500/40 transition-all relative group bg-gradient-to-br from-white/[0.02] to-transparent">
+                                        <div key={stat.name} className="glass p-10 rounded-[3rem] border border-white/5 hover:border-blue-500/40 transition-all relative group bg-gradient-to-br from-white/[0.02] to-transparent hover:!z-[999]">
                                             <div className="flex justify-between items-start mb-10">
                                                 <IntelTooltip title="Tactical Surface" content="클릭 시 이 후보에 대한 뉴스 데이터 기반의 정밀 분석 리포트를 생성합니다.">
                                                     <h4 className="text-4xl font-black italic cursor-pointer hover:text-blue-500 transition-all" onClick={() => { setSelectedCandidate(stat.name as any); setIsModalOpen(true); }}>{stat.name}</h4>
