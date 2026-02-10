@@ -897,6 +897,43 @@ export default function PolisightDashboard() {
                                                 </div>
                                             </div>
                                         </section>
+
+                                        <section className="pt-8 border-t border-white/5">
+                                            <h3 className="text-xl font-black italic mb-6 flex items-center gap-4 text-purple-400 uppercase tracking-widest"><HelpCircle size={20} /> 분석 방법론 및 용어 해설 (Methodology)</h3>
+                                            <div className="space-y-4">
+                                                <div className="p-5 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
+                                                    <div className="flex justify-between mb-2">
+                                                        <span className="text-xs font-black text-purple-300 uppercase">Real Poll (9%)</span>
+                                                        <span className="text-[10px] text-gray-500 font-bold">Base Metric</span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-400 font-medium leading-relaxed">최근 3개 주요 언론사 여론조사의 <span className="text-purple-200">가중 평균치</span>입니다. 단순 지지율을 넘어 추세를 반영합니다.</p>
+                                                </div>
+                                                <div className="p-5 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
+                                                    <div className="flex justify-between mb-2">
+                                                        <span className="text-xs font-black text-yellow-300 uppercase">Win Prob (40%)</span>
+                                                        <span className="text-[10px] text-gray-500 font-bold">Predictive Model</span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-400 font-medium leading-relaxed">단순 지지율뿐만 아니라 <span className="text-yellow-200">네트워크 장악력, 이슈 주도권, 위기 대응력</span>을 변수로 10,000회 몬테카를로 시뮬레이션을 수행한 결과입니다. 지지율이 낮아도 확장성이 높으면 승률이 높게 산출됩니다.</p>
+                                                </div>
+                                                <div className="p-5 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
+                                                    <div className="flex justify-between mb-2">
+                                                        <span className="text-xs font-black text-blue-300 uppercase">Intelligence Score (4.0/10)</span>
+                                                        <span className="text-[10px] text-gray-500 font-bold">AI Assessment</span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-400 font-medium leading-relaxed">뉴스 빅데이터상에서의 <span className="text-blue-200">언급 빈도와 문맥적 긍정/부정(Sentiment)</span>을 AI가 종합 평가한 지수입니다.</p>
+                                                </div>
+                                                <div className="p-5 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
+                                                    <div className="flex justify-between mb-2">
+                                                        <span className="text-xs font-black text-green-300 uppercase">Network / Topological Metric</span>
+                                                        <span className="text-[10px] text-gray-500 font-bold">Structural Analysis</span>
+                                                    </div>
+                                                    <p className="text-xs text-gray-400 font-medium leading-relaxed">
+                                                        <span className="font-bold text-white">매개(Betweenness):</span> 서로 다른 지지층을 연결하는 '다리' 역할의 크기 (확장성).<br />
+                                                        <span className="font-bold text-white mt-1 block">위상(Topological):</span> 전체 정치 지형도에서 중심부(Key Player)에 위치하는지, 주변부에 머무는지에 대한 구조적 위치값.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </section>
                                     </div>
 
                                     <section className="p-10 bg-blue-600/5 border border-blue-500/20 rounded-[3rem]">
