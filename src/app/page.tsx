@@ -74,38 +74,41 @@ const IntelTooltip = ({ title, content, children, side = "top" }: { title: strin
     const triggerRef = useRef<HTMLDivElement>(null);
     const [coords, setCoords] = useState({ top: 0, left: 0 });
 
-    // 호버 이벤트 시 좌표 즉시 갱신용 헬퍼
-    function updatePosition() {
+    // 호버 이벤트 시 좌표 즉시 갱신용 헬퍼 (useCallback으로 메모이제이션하여 린트 에러 해결)
+    const updatePosition = useCallback(() => {
         if (!triggerRef.current) return;
         const rect = triggerRef.current.getBoundingClientRect();
-        // Fixed positioning uses viewport coordinates directly
+
+        // 중앙값
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
 
         let top = 0;
         let left = 0;
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
 
         if (side === "top") { top = rect.top - 10; left = centerX; }
         else if (side === "bottom") { top = rect.bottom + 10; left = centerX; }
         else if (side === "right") { top = centerY; left = rect.right + 10; }
         else if (side === "left") { top = centerY; left = rect.left - 10; }
         setCoords({ top, left });
-    }
+    }, [side]); // side가 바뀔 때만 함수 재생성
 
     useEffect(() => {
-        if (show && triggerRef.current) {
+        if (show) {
             updatePosition();
+            // passive: true 옵션으로 성능 최적화
             window.addEventListener('scroll', updatePosition, { passive: true });
             window.addEventListener('resize', updatePosition, { passive: true });
+
             return () => {
                 window.removeEventListener('scroll', updatePosition);
                 window.removeEventListener('resize', updatePosition);
             };
         }
-    }, [show, side]);
+    }, [show, updatePosition]); // 의존성 배열에 updatePosition 추가
 
     return (
-        <div ref={triggerRef} className="relative inline-block" onMouseEnter={() => updatePosition() || setShow(true)} onMouseLeave={() => setShow(false)}>
+        <div ref={triggerRef} className="relative inline-block" onMouseEnter={() => { updatePosition(); setShow(true); }} onMouseLeave={() => setShow(false)}>
             {children}
             {show && typeof document !== 'undefined' && createPortal(
                 <AnimatePresence>
