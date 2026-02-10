@@ -74,40 +74,33 @@ const IntelTooltip = ({ title, content, children, side = "top" }: { title: strin
     const triggerRef = useRef<HTMLDivElement>(null);
     const [coords, setCoords] = useState({ top: 0, left: 0 });
 
+    // 호버 이벤트 시 좌표 즉시 갱신용 헬퍼
+    function updatePosition() {
+        if (!triggerRef.current) return;
+        const rect = triggerRef.current.getBoundingClientRect();
+        // Fixed positioning uses viewport coordinates directly
+
+        let top = 0;
+        let left = 0;
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        if (side === "top") { top = rect.top - 10; left = centerX; }
+        else if (side === "bottom") { top = rect.bottom + 10; left = centerX; }
+        else if (side === "right") { top = centerY; left = rect.right + 10; }
+        else if (side === "left") { top = centerY; left = rect.left - 10; }
+        setCoords({ top, left });
+    }
+
     useEffect(() => {
         if (show && triggerRef.current) {
-            const updatePosition = () => {
-                if (!triggerRef.current) return;
-                const rect = triggerRef.current.getBoundingClientRect();
-                const scrollX = window.scrollX;
-                const scrollY = window.scrollY;
-
-                let top = 0;
-                let left = 0;
-
-                // 중앙값 (문서 전체 기준)
-                const centerX = rect.left + scrollX + rect.width / 2;
-                const centerY = rect.top + scrollY + rect.height / 2;
-
-                if (side === "top") {
-                    top = rect.top + scrollY - 10;
-                    left = centerX;
-                } else if (side === "bottom") {
-                    top = rect.bottom + scrollY + 10;
-                    left = centerX;
-                } else if (side === "right") {
-                    top = centerY;
-                    left = rect.right + scrollX + 10;
-                } else if (side === "left") {
-                    top = centerY;
-                    left = rect.left + scrollX - 10;
-                }
-                setCoords({ top, left });
-            };
-
             updatePosition();
-            window.addEventListener('resize', updatePosition);
-            return () => window.removeEventListener('resize', updatePosition);
+            window.addEventListener('scroll', updatePosition, { passive: true });
+            window.addEventListener('resize', updatePosition, { passive: true });
+            return () => {
+                window.removeEventListener('scroll', updatePosition);
+                window.removeEventListener('resize', updatePosition);
+            };
         }
     }, [show, side]);
 
@@ -118,14 +111,14 @@ const IntelTooltip = ({ title, content, children, side = "top" }: { title: strin
                 <AnimatePresence>
                     {show && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                            initial={{ opacity: 0, scale: 0.9, y: 5 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 5 }}
                             style={{
-                                position: 'absolute',
+                                position: 'fixed',
                                 top: coords.top,
                                 left: coords.left,
-                                zIndex: 99999,
+                                zIndex: 999999,
                                 pointerEvents: 'none'
                             }}
                             className={`
@@ -135,9 +128,9 @@ const IntelTooltip = ({ title, content, children, side = "top" }: { title: strin
                                 ${side === "left" ? "-translate-x-full -translate-y-1/2" : ""}
                             `}
                         >
-                            <div className="bg-[#0f1115]/95 border border-blue-500/40 p-5 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] backdrop-blur-xl w-72 relative">
-                                <p className="text-[10px] font-black uppercase text-blue-400 mb-2 tracking-wider flex items-center gap-2">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" /> {title}
+                            <div className="bg-[#0f1115]/95 border border-purple-500/50 p-5 rounded-2xl shadow-[0_0_50px_rgba(139,92,246,0.3)] backdrop-blur-xl w-80 relative">
+                                <p className="text-[10px] font-black uppercase text-purple-400 mb-2 tracking-wider flex items-center gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-purple-500 animate-pulse shadow-[0_0_10px_#a855f7]" /> {title} <span className="text-[9px] text-gray-500 ml-auto border border-white/10 px-1 rounded">LIVE</span>
                                 </p>
                                 <p className="text-xs font-bold leading-relaxed text-gray-200">{content}</p>
                             </div>
@@ -148,25 +141,6 @@ const IntelTooltip = ({ title, content, children, side = "top" }: { title: strin
             )}
         </div>
     );
-
-    // 호버 이벤트 시 좌표 즉시 갱신용 헬퍼
-    function updatePosition() {
-        if (!triggerRef.current) return;
-        const rect = triggerRef.current.getBoundingClientRect();
-        const scrollX = window.scrollX;
-        const scrollY = window.scrollY;
-
-        let top = 0;
-        let left = 0;
-        const centerX = rect.left + scrollX + rect.width / 2;
-        const centerY = rect.top + scrollY + rect.height / 2;
-
-        if (side === "top") { top = rect.top + scrollY - 10; left = centerX; }
-        else if (side === "bottom") { top = rect.bottom + scrollY + 10; left = centerX; }
-        else if (side === "right") { top = centerY; left = rect.right + scrollX + 10; }
-        else if (side === "left") { top = centerY; left = rect.left + scrollX - 10; }
-        setCoords({ top, left });
-    }
 };
 
 export default function PolisightDashboard() {
